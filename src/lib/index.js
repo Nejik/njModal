@@ -1,0 +1,297 @@
+/*!
+ * njModal - v2.0.0
+ * nejikrofl@gmail.com
+ * Copyright (c) 2017 N.J.
+*/
+import j from 'lib/j'
+//by default we use jQuery, it makes possible to run plugin with jQuery (low ie support for example)
+const $ = window.jQuery || j;
+
+import {
+  getDefaultInfo,
+  defaults,
+  templates,
+  text
+} from 'lib/utils.js';
+
+export default class njModal {
+  constructor(el, options) {//el can be a string, selector/dom/j/jQuery element
+    if (!arguments.length) {
+      console.error('njModal, arguments don\'t specified.');
+      return;
+    }
+    let opts;
+
+    if (!options && el) {//if we have only one argument
+      if ($.isPlainObject(el)) {//if this argument is plain object, it is options
+        opts = el;
+      } else {//if it's not options, it is dom/j/jQuery element or selector
+        opts = { elem: el }
+      }
+    } else {//if we have two arguments
+      opts = options;
+      opts.elem = el;
+    }
+
+    opts = opts || {};
+
+    this._init(opts);
+  }
+
+  //we make array like object with all active instances of plugin
+  static instances = { length: 0 };
+  //array with all opened instances
+  static opened = [];
+
+  //addons
+  static a = {};
+
+  //default settings
+  static defaults = defaults;
+  static templates = templates;
+  static text = text;
+
+
+  _init(opts) {
+    let o = this.o = $.extend({}, njModal.defaults, opts),
+      that = this;
+
+    // this.items = [];//list of all slides
+    this.active = 0;
+
+    //inner options, current state of app
+    this.state = {};
+
+    //inner options, this settings alive throughout the life cycle of the plugin(until destroy)
+    this._globals = {
+      //todo, вынести в аддон галереи
+      // canChange: true//flag, that shows we can change slide
+    }
+    this._handlers = {};//all callback functions we used in event listeners lives here
+
+    this.v = {
+      document: $(document),
+      window: $(window),
+      html: $(document.documentElement),
+      body: $(document.body),
+      overlay: $(o.templates._overlay),
+
+      //... other will be added later
+    }
+
+    //we should have dom element or at least content option for creating slide
+    if (!o.elem && !o.content) {
+      this._error('njModal, no elements or content for modal.');
+      return;
+    }
+    //gather dom elements, this method will be replaced in gallery addon
+    this.els = this._gatherElements(o.elem);
+    if (o.elem && !this.els.length) {
+      this._error('njModal, wrong selector/element (o.elem)');
+      return;
+    }
+
+  }
+
+
+  _gatherElements = function (elem) {
+    let that = this,
+      $elem;
+    if (!elem) {
+      this._cb('elements_gathered', $elem);
+      return;
+    }
+
+    $elem = $(elem);
+
+    if ($elem.length > 1) {
+      $elem = $($elem[0])
+    }
+
+    if ($elem[0].njModal) {
+      this._error('njModal, already inited on this element', true);
+      return;
+    }
+    $elem[0].njModal = this; //prevent multiple initialization on one element
+
+    //extend global options with gathered from dom element
+    $.extend(true, this.o, this._gatherData($elem))
+
+    this._cb('elements_gathered', $elem);
+    return $elem;
+  }
+
+  _gatherData = function (el) {
+    let o = this.o,
+        $el = $(el),
+        dataO = $el.data(),//data original
+        dataProcessed = {};//data processed
+
+    if (dataO.njmOptions) {
+      try {
+        dataProcessed = $.parseJSON(dataO.njmOptions);
+        delete dataO.njmOptions;
+      }
+      catch (e) {
+        this._error('njModal, fail to parse json from njm-options', true);
+        return;
+      }
+    }
+
+    //try to get href from original attributes
+    if ($el[0].tagName.toLowerCase() === 'a') {
+      let href = $el.attr('href');
+      if (href && href !== '#' && href !== '#!' && !(/^(?:javascript)/i).test(href)) {//test href for real info, not placeholder
+        dataProcessed.content = href;
+      }
+    }
+
+    //get title
+    if (o.titleAttr) {
+      let titleAttr = $el.attr(o.titleAttr);
+      if (titleAttr) dataProcessed.title = titleAttr;
+    }
+
+    $.extend(true, dataProcessed, choosePrefixedData(dataO))
+
+    function choosePrefixedData(data) {
+      var prefixedData = {};
+
+      for (var p in data) {//use only data properties with njm prefix
+        if (data.hasOwnProperty(p) && /^njm[A-Z]+/.test(p)) {
+          var shortName = p.match(/^njm(.*)/)[1],
+            shortNameLowerCase = shortName.charAt(0).toLowerCase() + shortName.slice(1);
+
+          prefixedData[shortNameLowerCase] = transformType(data[p]);
+        }
+      }
+
+      return prefixedData;
+    }
+
+
+    function transformType(val) {//transform string from data attributes to boolean and number
+      var parsedFloat = parseFloat(val);
+      if (val === 'true') {
+        return true;
+      } else if (val === 'false') {
+        return false;
+      } else if (!isNaN(parsedFloat)) {
+        return parsedFloat;
+      } else {
+        return val;
+      }
+    }
+
+    this._cb('data_gathered', dataProcessed, $el[0]);
+    return dataProcessed;
+  }
+
+
+  _error = function (msg, clear) {
+    if (!msg) return;
+
+    if (clear) this._clear();
+
+    console.error(msg);
+  }
+  _cb = function (type) {//cb - callback
+    var o = this.o,
+      that = this,
+      callbackResult;
+
+    if (type === 'inited' ||
+      type === 'show' ||
+      type === 'shown' ||
+      type === 'hide' ||
+      type === 'hidden' ||
+      type === 'change' ||
+      type === 'changed' ||
+      type === 'destroy' ||
+      type === 'destroyed'
+    ) {
+      this.state = type;
+    }
+    //do some dirty stuff on callbacks
+    this._cbStuff(type);
+
+    //trigger callbacks
+
+    //trigger on modal instance
+    this.trigger.apply(this, arguments);
+
+
+    //trigger common callback function from options
+    var cbArgs = Array.prototype.slice.call(arguments);
+    if (o['oncb'] && typeof o['oncb'] === 'function') {
+      callbackResult = o['oncb'].apply(this, cbArgs);
+    }
+    //trigger common callback on document
+    // cbArgs.push(this);
+    // this.v.document.triggerHandler('njm_cb', cbArgs);
+
+    //trigger common callback on instance
+    this.trigger.apply(this, ['cb'].concat(cbArgs));
+
+
+    //trigger callback from options with "on" prefix (onshow, onhide)
+    var clearArgs = Array.prototype.slice.call(arguments, 1);
+    if (typeof o['on' + type] === 'function') {
+      callbackResult = o['on' + type].apply(this, clearArgs);
+    }
+
+
+    //trigger on document
+    // var args = Array.prototype.slice.call(arguments, 1);
+    // args.unshift(this);
+    // this.v.document.triggerHandler('njm_'+type, args);
+
+
+    //trigger on element
+    //todo make trigger on element option
+    // if(o.$elem && o.$elem.length) o.$elem.triggerHandler('njm_'+type, args);
+    return callbackResult;
+  }
+  _cbStuff = function (type) {
+    var o = this.o;
+
+    switch (type) {
+      case 'shown':
+        this._setFocusInPopup();
+
+        // todo, preload for gallery
+        // setTimeout(function() {
+        //   if(njBox.a.gallery)that._preload();//start preload only after all animations is probably complete..
+        // }, 500);
+        break;
+      case 'hidden':
+        this.state = 'inited';
+        break;
+    }
+  }
+
+  //event emitter
+  on = function (event, fct) {
+    this._events = this._events || {};
+    this._events[event] = this._events[event] || [];
+    this._events[event].push(fct);
+    return this;
+  }
+  off = function (event, fct) {
+    this._events = this._events || {};
+    if (event in this._events === false) return;
+    this._events[event].splice(this._events[event].indexOf(fct), 1);
+    return this;
+  }
+  trigger = function (event /* , args... */) {
+    this._events = this._events || {};
+    if (event in this._events === false) return;
+    for (var i = 0; i < this._events[event].length; i++) {
+      this._events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    return this;
+  }
+}
+
+//global options (we should call it only once)
+if (!njModal.g) njModal.g = getDefaultInfo();

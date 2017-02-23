@@ -1,0 +1,10 @@
++ add main field in package.json
+
+
+
+To polyfill
+
+  querySelector
+  dataset
+  datalist
+  indexof

@@ -30,6 +30,9 @@ const webpackConfig = {
     // chunkFilename: config.isDevelopment ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     chunkFilename: '[id].js',
     sourcePrefix: '  ',
+
+    library: 'njModal',
+    libraryTarget: "umd"
   },
 
   resolve: {
