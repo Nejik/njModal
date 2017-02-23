@@ -29,7 +29,12 @@
   <div class="modal">modal window ololo</div>
   <script src="njModal.js"></script>
   <script>
-    console.log(njModal)
+    var modal = new njModal({
+                              content: 'trololo',
+                              cb: function() {
+                                console.log(arguments);
+                              }
+                            })
   </script>
 </body>
 

@@ -9,15 +9,13 @@ const $ = window.jQuery || j;
 
 import {
   getDefaultInfo,
-  defaults,
-  templates,
-  text
+  defaults
 } from 'lib/utils.js';
 
-export default class njModal {
+class njModal {
   constructor(el, options) {//el can be a string, selector/dom/j/jQuery element
     if (!arguments.length) {
-      console.error('njModal, arguments don\'t specified.');
+      console.error('njModal, arguments not passed.');
       return;
     }
     let opts;
@@ -48,9 +46,6 @@ export default class njModal {
 
   //default settings
   static defaults = defaults;
-  static templates = templates;
-  static text = text;
-
 
   _init(opts) {
     let o = this.o = $.extend({}, njModal.defaults, opts),
@@ -73,8 +68,7 @@ export default class njModal {
       document: $(document),
       window: $(window),
       html: $(document.documentElement),
-      body: $(document.body),
-      overlay: $(o.templates._overlay),
+      body: $(document.body)
 
       //... other will be added later
     }
@@ -84,21 +78,90 @@ export default class njModal {
       this._error('njModal, no elements or content for modal.');
       return;
     }
-    //gather dom elements, this method will be replaced in gallery addon
-    this.els = this._gatherElements(o.elem);
-    if (o.elem && !this.els.length) {
-      this._error('njModal, wrong selector/element (o.elem)');
+
+    //gather options for every slide
+    this.items = this._createItems(this.els || [this.o]);
+  }
+  _createItems = function (els) {
+    let items = [];
+    for (let i = 0, l = els.length; i < l; i++) {
+      items.push(this._createItem(els[i]))
+    }
+    return items;
+  }
+  _createItem = function (item) {
+    let normalizedItem = this._normalizeItem(item);
+
+    normalizedItem.dom = this._createDomForItem(normalizedItem);
+    
+    this._cb('slide_created', normalizedItem);
+    return normalizedItem;
+  }
+  _normalizeItem = function (item) {
+    let normalizedItem = {
+      content: item.content || this.o.text._missedContent,
+      type: item.type || this._type(item.content),
+      header: item.header,
+      footer: item.footer,
+      title: item.title,
+      el: item.dom,
+      template: item.template,
+      o: {}
+    };
+
+    return normalizedItem;
+  }
+  _createDomForItem = function (item) {
+    var o = this.o,
+        that = this,
+        dom = {};
+    
+    dom.modal = $(o.templates.modal);
+    dom.modal[0].setAttribute('tabindex', '-1');
+    dom.modal[0].njModal = that;
+    if (!dom.modal.length) {
+      that._error('njModal, error in o.templates.modal');
       return;
     }
-
+    
+    if(o.template) {
+      this._createContentFromTemplate(item);
+    } else {
+      this._createContentFromOptions(item);
+    }
+    console.log(dom.modal[0].outerHTML);
+    
+    return dom;
   }
+  _createContentFromTemplate = function() {
+    return '';
+  }
+  _createContentFromOptions = function() {
+    return '';
+  }
+  _type = function (content) {//detect content type
+    var type = 'html';
 
+    if (typeof content === 'object') {
+      if ((window.jQuery && content instanceof window.jQuery) || (window.j && content instanceof window.j)) {
+        return 'selector';
+      }
+    } else
+      if (/^[#.]\w/.test(content)) {
+        return 'selector';
+      } else if (/\.(png|jpg|jpeg|gif|tiff|bmp|webp)(\?\S*)?$/i.test(content)) {
+        return 'image';
+      }
+
+
+    return type;
+  }
 
   _gatherElements = function (elem) {
     let that = this,
       $elem;
     if (!elem) {
-      this._cb('elements_gathered', $elem);
+      this._cb('elements_gathered', elem);
       return;
     }
 
@@ -115,17 +178,17 @@ export default class njModal {
     $elem[0].njModal = this; //prevent multiple initialization on one element
 
     //extend global options with gathered from dom element
-    $.extend(true, this.o, this._gatherData($elem))
+    $.extend(true, this.o, this._gatherData($elem[0]))
 
-    this._cb('elements_gathered', $elem);
+    this._cb('elements_gathered', $elem[0]);
     return $elem;
   }
 
   _gatherData = function (el) {
     let o = this.o,
-        $el = $(el),
-        dataO = $el.data(),//data original
-        dataProcessed = {};//data processed
+      $el = $(el),
+      dataO = $el.data(),//data original
+      dataProcessed = {};//data processed
 
     if (dataO.njmOptions) {
       try {
@@ -187,7 +250,52 @@ export default class njModal {
     return dataProcessed;
   }
 
+  //todo, check clear method
+  _clear = function () {
+    var o = this.o,
+      that = this;
 
+    this.v.container[0].njm_instances--;
+    this.v.container.removeClass('njm_open');//remove only from last closing instance
+
+    if (o['class']) this.v.wrap.removeClass(o['class']);
+
+    that._scrollbar('show');
+
+
+    if (this.v.wrap && this.v.wrap.length) this.v.wrap[0].parentNode.removeChild(this.v.wrap[0]);
+
+    this._removeSelectorItemsElement();
+
+    //todo, clear only in gallery
+    //todo, do this if not tooltip/popover
+    //clear inline position
+    // for (var i = 0, l = that.items.length; i < l ;i++) {
+    //     that.items[i].dom.modalOuter[0].style.cssText = '';
+    // }
+
+
+    //todo, remove in gallery addon
+    // if(o.delegate) {//we should remove this info, because of delegate mode, it will be created again on next show
+    //     if(that.els && that.els.length) that.els.each(function (i,el) {
+    //         delete el.njBox;
+    //     })
+    //     delete that.els;
+    //     that.items = [];//list of all items
+    // }
+    this.active = 0;
+
+    if (this.v.items && this.v.items.length) empty(this.v.items[0]);//we can't use innerHTML="" here, for IE(even 11) we need remove method
+
+    function empty(el) {
+      while (el.firstChild) {
+        el.removeChild(el.firstChild);
+      }
+    }
+    this._o = {};
+
+    that._cb('clear');
+  }
   _error = function (msg, clear) {
     if (!msg) return;
 
@@ -292,6 +400,7 @@ export default class njModal {
     return this;
   }
 }
-
 //global options (we should call it only once)
 if (!njModal.g) njModal.g = getDefaultInfo();
+
+export default njModal;
