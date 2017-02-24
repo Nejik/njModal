@@ -17,6 +17,12 @@
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   
   <style>
+    html {
+      overflow-y: scroll;
+    }
+    .lorem {
+      /*height: 2000px;*/
+    }
     .modal {
       display: none;
     }
@@ -25,16 +31,18 @@
 </head>
 
 <body>
+  <div class="lorem"></div>
   <a href="#!" class="link">Open window</a>
   <div class="modal">modal window ololo</div>
   <script src="njModal.js"></script>
   <script>
     var modal = new njModal({
                               content: 'trololo',
-                              cb: function() {
-                                console.log(arguments);
-                              }
+                              header: 'header',
+                              footer: 'footer',
                             })
+    modal.show();
+    // console.log(modal);
   </script>
 </body>
 

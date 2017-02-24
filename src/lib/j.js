@@ -136,6 +136,9 @@ j.extend = function () {
     // Return the modified object
     return target;
 };
+j.inArray = function (element, array, i) {
+    return array == null ? -1 : array.indexOf(element, i);
+}
 
 
 //only in get mode
@@ -154,6 +157,91 @@ j.fn.find = function (selector) {
     })
     return j(newArray);
 }
+j.fn.on = function (type, fn) {
+    return this.each(function () {
+        this.addEventListener(type, fn, false);
+    })
+}
+j.fn.off = function (type, fn) {
+    return this.each(function () {
+        this.removeEventListener(type, fn);
+    })
+}
+j.fn.delegate = function (selector, type, fn) {
+    return this.each(function (i) {
+        var parent = this;
+
+        if (!this._events) this._events = {};
+        if (!this._events[type]) this._events[type] = [];
+
+        var cb = function (e) {
+            var target = e && e.target || window.event.srcElement,
+                path = e.path;//only in chrome for now... 18.12.2015
+
+            if (!path) {
+                path = [];
+                var node = target;
+                while (node) {
+                    path.push(node);
+                    node = node.parentNode;
+                }
+            }
+            // e.path = path;
+
+            for (var i = 0, l = path.length; i < l; i++) {
+                if (path[i] === parent) break;//don't check all dom
+                if (path[i] !== document && j.match(path[i], selector)) {
+                    fn.call(path[i], e);
+                    break;//if we find needed el, don't need to check all other dom elements
+                }
+            }
+        }
+        cb.fn = fn;
+
+        this.addEventListener(type, cb, false);
+
+        this._events[type].push(cb);
+    })
+}
+j.fn.undelegate = function (selector, type, fn) {
+    if (!fn) {
+        fn = type;
+        type = selector;
+    }
+
+    return this.each(function (i) {
+        var events = this._events,
+            types = this._events[type];
+        if (!events || !types) return;
+
+        for (var i = 0, l = types.length; i < l; i++) {
+            if (fn === types[i].fn) {
+                this.removeEventListener(type, types[i]);
+                delete types[i].fn;
+                types.splice(i, 1)
+                break;
+            }
+        }
+        if (!types.length) delete events[type];
+
+
+        //check if we have any empty event containers
+        var emptyEvents = true;
+        for (var prop in events) {
+            if (events.hasOwnProperty(prop)) {
+                emptyEvents = false;
+                break;
+            }
+        }
+        if (emptyEvents) delete this._events;
+    })
+}
+j.fn.trigger = j.fn.triggerHandler = function (type, data) {
+    return this.each(function (i) {
+        var event = new CustomEvent(type, { 'detail': data || null });
+        this.dispatchEvent(event);
+    })
+}
 //only in get mode
 j.fn.data = function (type, fn) {
     return this[0].dataset;
@@ -161,7 +249,92 @@ j.fn.data = function (type, fn) {
 j.parseJSON = function (json) {
     return JSON.parse(json);
 }
+j.fn.css = function (prop, value) {
+    var that = this;
+    if (!prop) return;
 
+    if (prop == 'float') prop = 'styleFloat';
+
+    function prefixed(prop) {//select proper prefix
+        var vendorProp,
+            supportedProp,
+            prefix,
+            prefixes = ["Webkit", "Moz", "O", "ms"],
+            capProp = prop.charAt(0).toUpperCase() + prop.slice(1),// Capitalize first character of the prop to test vendor prefix
+            div = that[0];
+
+        if (prop in div.style) {
+            supportedProp = prop;// Browser supports standard CSS property name
+        } else {
+            for (var i = 0; i < prefixes.length; i++) {// Otherwise test support for vendor-prefixed property names
+                vendorProp = prefixes[i] + capProp;
+
+                if (vendorProp in div.style) {
+                    prefix = prefixes[i];
+                    supportedProp = vendorProp;
+                    break;
+                } else {
+                    vendorProp = undefined;
+                }
+
+            }
+        }
+
+
+        return supportedProp;
+    }
+
+
+    if (typeof prop === 'object') {
+        return this.each(function () {
+            for (var key in prop) {
+                this.style[prefixed(key)] = prop[key];
+            }
+        })
+    } else {
+        if (value) {
+            return this.each(function () {
+                this.style[prefixed(prop)] = value;
+            });
+        } else {
+            return getComputedStyle(this[0], null)[prefixed(prop)] || undefined;
+        }
+    }
+}
+j.fn.hasClass = function (classname) {
+    return this[0].classList.contains(classname);
+}
+j.fn.addClass = function (classname) {
+    return this.each(function () {
+        this.classList.add(classname)
+    });
+}
+j.fn.removeClass = function (classname) {
+    return this.each(function () {
+        this.classList.remove(classname)
+    });
+}
+// for closest we need j.inArray
+j.fn.closest = function (selector) {
+    var closestArr = [],
+        parent;
+
+    for (var i = 0, l = this.length; i < l; i++) {
+        if (j.match(this[i], selector)) {
+            closestArr.push(this[i])
+        } else {
+            parent = this[i].parentNode;
+            if (parent === document) parent = document.documentElement;
+
+            while (parent && parent.tagName !== 'HTML') {
+                if (j.match(parent, selector) && j.inArray(parent, closestArr) === -1) closestArr.push(parent);
+                parent = parent.parentNode;
+            }
+        }
+    }
+
+    return j(closestArr);
+}
 
 
 

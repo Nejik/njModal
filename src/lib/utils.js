@@ -101,7 +101,8 @@ export let defaults = {
 	elem: '',//(selector || dom\jQuery element) dom element for triggering modal (it should be single elements, if plugin will found here few elements, instance of gallery will be created)
 	container: 'body',//(selector) appends modal to specific element
 	position: 'fixed',//(fixed || absolute), how popup will be positioned. For most cases fixed is good, but when we insert popup inside element, not document, absolute position sets automatically
-	click: true,//(boolean) should we set click handler on element?
+	centering: 'css',//(css || js) what method we should use to center our modal, in css mode we use some hacky trick with inline-block, in js way we calculation position by javascript. CSS is preferred way
+	click: true,//(boolean) should we set click handler on element(o.elem)?
 	clickels: '',//(selector || dom\jQuery element) additional elements that can trigger same modal window
 
 	overlay: true,//(one || boolean) should we show overlay? true - show overlay for every popup, one - overlay will be only one for first popup
@@ -132,7 +133,7 @@ export let defaults = {
 	// preload:           '3 3',//(boolean false || string) space separated string with 2 numbers, how much images we should preload before  and after active slide
 
 	templates: {
-		wrap: '<div class="njm-wrap"><div class="njm-slides"></div></div>',
+		wrap: '<div class="njm-wrap"><div class="njm-items"></div></div>',
 		overlay: '<div class="njm-overlay"></div>',
 		modalOuter: '<div class="njm-outer" data-njm-outer></div>',
 		modal: '<aside class="njm"></aside>',
@@ -154,7 +155,6 @@ export let defaults = {
 		// next:        '<button type="button" class="njm-arrow njm-next" data-njm-next></button>'
 	},
 
-	template: undefined,
 	content: undefined,//(string) content for modal
 	_missedContent: 'njModal plugin: meow, put some content here...',//this string uses, when slide have no content
 	type: '',//(html || selector || text || image) type of content, if selector used, whole element will be inserted in modal
