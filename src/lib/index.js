@@ -61,7 +61,7 @@ class njModal {
 
     //inner options, this settings alive throughout the life cycle of the plugin(until destroy)
     this._globals = {
-      
+
     }
     this._handlers = {};//all callback functions we used in event listeners lives here
 
@@ -198,6 +198,7 @@ class njModal {
         'height': this.state.dimensions.containerScrollHeight + 'px'
       });
     }
+    this._setMaxHeight(this.items[this.active]);
 
     this._cb('positioned');
 
@@ -235,6 +236,60 @@ class njModal {
     }
 
     d.containerMaxScrollTop = d.containerScrollHeight - d.containerHeight;
+
+    // d.winWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    d.winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    d.autoheight = (this.v.container[0] === this.v.body[0]) ? d.winHeight : d.containerHeight;
+    // if(this._o.scrollbarHidden) {
+    //  this._o.winWidth -= njModal.g.scrollbarSize;
+    // }
+  }
+  _setMaxHeight = function (item) {
+    let o = this.o;
+
+    if (!o.autoheight || o.autoheight === 'image' && item.type !== 'image') return;
+
+    if (!this.state.autoheightAdded) {
+      this.v.items.addClass('njm-autoheight');
+      (o.autoheight === true) ? this.v.items.addClass('njm-autoheight-true') : this.v.items.addClass('njm-autoheight-image')
+      this.state.autoheightAdded = true
+    }
+
+    let v = item.dom,
+      modalMargin = summ(v.modal, 'margin'),
+      modalPadding = (summ(v.modal, 'padding') + parseInt(v.modal.css('borderTopWidth')) + parseInt(v.modal.css('borderBottomWidth'))) || 0,
+
+      bodyMargin = summ(v.body, 'margin'),
+      bodyPadding = (summ(v.body, 'padding') + parseInt(v.body.css('borderTopWidth')) + parseInt(v.body.css('borderBottomWidth'))) || 0,
+
+      containerHeight = this.state.dimensions.autoheight,
+
+      height = containerHeight,
+
+      bodyBorderBox = v.body.css('boxSizing') === 'border-box';
+
+    function summ(el, prop) {
+      return (parseInt(el.css(prop + 'Top')) + parseInt(el.css(prop + 'Bottom'))) || 0;
+    }
+
+    let headerHeight = 0,
+      footerHeight = 0;
+
+    (v.header && v.header.length) ? headerHeight = v.header[0].scrollHeight + (parseInt(v.header.css('borderTopWidth')) + parseInt(v.header.css('borderBottomWidth'))) || 0 : 0;
+    (v.footer && v.footer.length) ? footerHeight = v.footer[0].scrollHeight + (parseInt(v.footer.css('borderTopWidth')) + parseInt(v.footer.css('borderBottomWidth'))) || 0 : 0;
+
+    height = containerHeight - modalMargin - modalPadding - bodyMargin - headerHeight - footerHeight;
+
+    if (!bodyBorderBox) height -= bodyPadding;
+
+    v.body.css('maxHeight', height + 'px');
+
+    // if (that.slides[index].type === 'image') {
+    //   var autoheightImg = containerHeight - modalMargin - modalPadding - bodyMargin - bodyPadding - headerHeight - footerHeight;
+
+    //   v.$img.css('maxHeight', autoheightImg + 'px');
+    // }
   }
   //return array with raw options gathered from items from which gallery/modal will be created, this method will be replaced in gallery addon
   _createRawItems = function () {
@@ -1158,8 +1213,8 @@ class njModal {
         this._setFocusInPopup();
 
         break;
-      case  'hide':
-        if(this.state.clickedEl) this.state.clickedEl.focus();
+      case 'hide':
+        if (this.state.clickedEl) this.state.clickedEl.focus();
         break;
       case 'hidden':
         this.state.state = 'inited';

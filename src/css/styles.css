@@ -71,6 +71,7 @@
   *padding-top:50px;
 
   user-select: none;
+  box-sizing: border-box;
 }
 .njm-outer:before {
   content: '';
@@ -132,6 +133,12 @@
   transform: scale(0.8) !important;
 }
 
+.njm-autoheight .njm-outer {
+	overflow-y: hidden;
+}
+.njm-autoheight-true .njm-content .njm-body {
+	overflow-y: auto;
+}
 
 
 
@@ -275,14 +282,4 @@
 }
 .njm-image img {
   background-color: rgba(255,255,255,.1);
-}
-
-
-
-.njm-ui-count {
-  text-shadow: 0 0 5px #000;
-}
-
-.njm-ui-title-inner {
-  max-width: 600px;
 }
