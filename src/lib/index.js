@@ -678,7 +678,7 @@ class njModal {
 
       (e.preventDefault) ? e.preventDefault() : e.returnValue = false;
 
-      
+
       if (o.out) {
         that.hide();
       } else {
@@ -1178,6 +1178,9 @@ class njModal {
         // setTimeout(function() {
         //   if(njModal.a.gallery)that._preload();//start preload only after all animations is probably complete..
         // }, 500);
+        break;
+      case  'hide':
+        if(this.state.clickedEl) this.state.clickedEl.focus();
         break;
       case 'hidden':
         this.state.state = 'inited';
