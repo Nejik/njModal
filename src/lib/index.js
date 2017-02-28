@@ -170,9 +170,7 @@ class njModal {
 
     this._removeEventsHandlers();
 
-    this._anim('hide', function () {
-      this._clear();
-    });
+    this._anim('hide');
 
     return this;
   }
@@ -1070,6 +1068,7 @@ class njModal {
 
       if (callback) callback.apply(that);
       that._cb('hidden');
+      that._clear();
     }
   }
 

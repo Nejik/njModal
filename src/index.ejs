@@ -37,7 +37,10 @@
   <script src="njModal.js"></script>
   <script>
     var modal = new njModal({
-                              elem: '.link'
+                              elem: '.link',
+                              onhidden: function () {
+                                console.log(this.state);
+                              }
                             })
     // console.log(modal);
   </script>
