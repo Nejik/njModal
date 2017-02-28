@@ -52,8 +52,7 @@ class njModal {
   }
 
   _init(opts) {
-    let o = this.o = $.extend({}, njModal.defaults, opts),
-      that = this;
+    let o = this.o = $.extend({}, njModal.defaults, opts);
 
     this.active = 0;
 
@@ -163,7 +162,6 @@ class njModal {
     }
 
     var o = this.o,
-      that = this,
       h = this._handlers;
 
     if (this._cb('hide') === false) return;//callback hide
@@ -181,8 +179,7 @@ class njModal {
   position = function () {
     if (!this.state.inited) return;
 
-    var o = this.o,
-      that = this;
+    var o = this.o;
 
     this._getContainerSize();
 
@@ -210,8 +207,7 @@ class njModal {
     return this;
   }
   _getContainerSize = function () {
-    var o = this.o,
-      that = this;
+    var o = this.o;
 
     var d = this.state.dimensions = {}
 
@@ -369,7 +365,6 @@ class njModal {
   }
   _createDomForItem = function (item) {
     var o = this.o,
-      that = this,
       dom = item.dom = {},
       modalFragment = document.createDocumentFragment();
 
@@ -379,9 +374,9 @@ class njModal {
     //main modal wrapper
     dom.modal = $(o.templates.modal);
     dom.modal[0].setAttribute('tabindex', '-1');
-    dom.modal[0].njModal = that;
+    dom.modal[0].njModal = this;
     if (!dom.modal.length) {
-      that._error('njModal, error in o.templates.modal');
+      this._error('njModal, error in o.templates.modal');
       return;
     }
 
@@ -390,7 +385,7 @@ class njModal {
     //insert body
     dom.body = $(o.templates.body);
     if (!dom.body.length) {
-      that._error('njModal, error in o.templates.body');
+      this._error('njModal, error in o.templates.body');
       return;
     }
 
@@ -403,7 +398,7 @@ class njModal {
       dom.header = $(o.templates.header);
 
       if (!dom.header.length) {
-        that._error('njModal, error in o.templates.header');
+        this._error('njModal, error in o.templates.header');
         return;
       }
       //insert header info
@@ -418,7 +413,7 @@ class njModal {
       dom.footer = $(o.templates.footer);
 
       if (!dom.footer.length) {
-        that._error('njModal, error in njModal.templates.footer');
+        this._error('njModal, error in njModal.templates.footer');
         return;
       }
       //insert footer info
@@ -476,8 +471,7 @@ class njModal {
     }
   }
   _createDom = function () {
-    var o = this.o,
-      that = this;
+    var o = this.o;
 
     //find container
     this.v.container = $(o.container);
@@ -625,8 +619,7 @@ class njModal {
 
 
   _setClickHandlers = function () {//initial click handlers
-    var o = this.o,
-      that = this;
+    var o = this.o;
 
     if (!o.click) return;
 
@@ -926,7 +919,6 @@ class njModal {
 
   _calculateAnimations = function () {
     var o = this.o,
-      that = this,
       animShow,
       animHide,
       animShowDur,
@@ -961,7 +953,7 @@ class njModal {
       document.body.appendChild(div);
       appended = true;
 
-      animShowDur = that._getAnimTime(div);
+      animShowDur = this._getAnimTime(div);
     } else {
       animShowDur = parseInt(animShowDur) || 0;
     }
@@ -974,7 +966,7 @@ class njModal {
         appended = true;
       }
 
-      animHideDur = that._getAnimTime(div);
+      animHideDur = this._getAnimTime(div);
     } else {
       animHideDur = parseInt(animHideDur) || 0;
     }
@@ -1083,15 +1075,14 @@ class njModal {
 
 
   _clear = function () {
-    var o = this.o,
-      that = this;
+    var o = this.o;
 
     this.v.container[0].njm_instances--;
     this.v.container.removeClass('njm_open');//remove only from last closing instance
 
     if (o['class']) this.v.wrap.removeClass(o['class']);
 
-    that._scrollbar('show');
+    this._scrollbar('show');
 
 
     if (this.v.wrap && this.v.wrap.length) this.v.wrap[0].parentNode.removeChild(this.v.wrap[0]);
@@ -1112,7 +1103,7 @@ class njModal {
       state: 'inited'
     };
 
-    that._cb('clear');
+    this._cb('clear');
   }
   _error = function (msg, clear) {
     if (!msg) return;
@@ -1123,7 +1114,6 @@ class njModal {
   }
   _cb = function (type) {//cb - callback
     var o = this.o,
-      that = this,
       callbackResult;
 
     if (type === 'inited' ||

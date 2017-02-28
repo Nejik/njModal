@@ -111,7 +111,7 @@ export let defaults = {
 	out: true,//(boolean) click outside modal will close it
 	esc: true,//(boolean) close modal when esc button pressed?
 	close: 'outside',//(inside || outside || boolean false) add close button inside or outside popup or don't add at all
-	autoheight: 'image',//(boolean || image) should we set maximum height of modal? if image is selected, only images will be autoheighted
+	// autoheight: 'image',//(boolean || image) should we set maximum height of modal? if image is selected, only images will be autoheighted
 
 
 	focus: 'input, select, textarea, button',//(boolean false, selector) set focus to element, after modal is shown, if false, no autofocus elements inside, otherwise focus selected element
@@ -167,7 +167,7 @@ export let defaults = {
 	animclass: 'animated',//(string) additional class that will be added to modal window during animation (can be used for animate.css or other css animation libraries)
 	duration: 'auto',//(string || number || auto) duration of animations, or string with space separated 2 durations of show/hide animation. You can set 'auto 100' if you want to set only duration for hide. It should be used when problems with auto detection (but I have not seen this problem ^^)
 
-	img: 'load',//(load || ready) we should wait until img will fully loaded or show as soon as size will be known (ready is useful for progressive images)
+	// img: 'load',//(load || ready) we should wait until img will fully loaded or show as soon as size will be known (ready is useful for progressive images)
 	text: {
 		_missedContent: 'njBox plugin: meow, put some content here...',//text for case, when slide have no content
 		// preloader:    'Loading...',//title on preloader element
