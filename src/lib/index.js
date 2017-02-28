@@ -881,7 +881,7 @@ class njModal {
         if (this.state.overlayVisible) return;
 
         if (o.overlay === true) {
-          if (o.overlayassist) this.v.overlay[0].style.cssText = njModal.g.transitionDuration.css + ':' + njModal.g.animShowDur + 'ms';
+          if (o.overlayassist) this.v.overlay.css('transitionDuration', this._globals.animShowDur + 'ms')
 
           //insert overlay div
           if (o.position === 'absolute') this.v.overlay.addClass('njm_absolute');
@@ -899,7 +899,7 @@ class njModal {
 
       case 'hide':
         if (!this.state.overlayVisible) return;
-        if (o.overlayassist) this.v.overlay[0].style.cssText += njModal.g.transitionDuration.css + ':' + njModal.g.animHideDur + 'ms';
+        if (o.overlayassist) this.v.overlay.css('transitionDuration', this._globals.animHideDur + 'ms')
 
         this.v.overlay.removeClass('njm-visible');
 
