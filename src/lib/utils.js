@@ -103,16 +103,14 @@ export let defaults = {
 	position: 'fixed',//(fixed || absolute), how popup will be positioned. For most cases fixed is good, but when we insert popup inside element, not document, absolute position sets automatically
 	centering: 'css',//(css || js) what method we should use to center our modal, in css mode we use some hacky trick with inline-block, in js way we calculation position by javascript. CSS is preferred way
 	click: true,//(boolean) should we set click handler on element(o.elem)?
-	clickels: '',//(selector || dom\jQuery element) additional elements that can trigger same modal window
+	clickels: '',//(selector || dom\jQuery element) additional elements that can trigger same modal window (very often on landing pages you need few links to open one modal window)
 
-	overlay: true,//(one || boolean) should we show overlay? true - show overlay for every popup, one - overlay will be only one for first popup
-	overlayassist: true,//(boolean) if true, animation durations of modal will automatically sets to overlay
+	overlay: true,//(boolean) should we show overlay? true - show overlay for every popup
+	overlayassist: true,//(boolean) if true, animation durations of modal will automatically sets to overlay to be in sync
 	scrollbar: 'hide',//(show || hide) should we hide scrollbar from page?
-	els2margin: '',//(selector || dom\jQuery element) for those elements we will add margin-right when modal shows, if active slide has horizontal scrollbar (can be useful for fixed headers)
 	out: true,//(boolean) click outside modal will close it
 	esc: true,//(boolean) close modal when esc button pressed?
 	close: 'outside',//(inside || outside || boolean false) add close button inside or outside popup or don't add at all
-	modal: false,//(boolean)just shortcut for out: false, close: false and also adds fancy animation when somebody tries to close modal with bg click
 	autoheight: 'image',//(boolean || image) should we set maximum height of modal? if image is selected, only images will be autoheighted
 
 

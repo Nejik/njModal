@@ -506,11 +506,6 @@ class njModal {
     if (this.v.container[0] !== this.v.body[0]) o.position = 'absolute';
     if (o.position === 'absolute') this.v.wrap.addClass('njm_absolute');
 
-    if (o.modal) {
-      o.out = false;
-      o.close = false;
-    }
-
     // insert outside close button
     if (o.close === 'outside') {
       var closeBtn = this.v.close = $(o.templates.close);
@@ -692,10 +687,12 @@ class njModal {
 
       (e.preventDefault) ? e.preventDefault() : e.returnValue = false;
 
-      if (!o.modal) {
+      
+      if (o.out) {
         that.hide();
       } else {
         that.items[that.active].dom.modal.addClass('njm_pulse');
+        that._setFocusInPopup();
 
         setTimeout(function () {
           that.items[that.active].dom.modal.removeClass('njm_pulse');
