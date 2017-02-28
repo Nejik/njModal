@@ -29,7 +29,7 @@
 
   backface-visibility: hidden;
 
-  opacity: 0.001;
+  opacity: 0;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=1)";
   filter: alpha(opacity=1);
   
