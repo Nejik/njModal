@@ -31,7 +31,8 @@ const webpackConfig = {
     sourcePrefix: '  ',
 
     library: 'njModal',
-    libraryTarget: "umd"
+    libraryTarget: "umd",
+    umdNamedDefine: true
   },
 
   resolve: {

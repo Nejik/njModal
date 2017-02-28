@@ -42,6 +42,15 @@ class njModal {
   //default settings
   static defaults = defaults;
 
+  static autobind = function () {
+    $(njModal.defaults.autobind).each(function () {
+      if (this.njModal) return;
+      new njModal({
+        elem: $(this)
+      })
+    })
+  }
+
   _init(opts) {
     let o = this.o = $.extend({}, njModal.defaults, opts),
       that = this;
@@ -1214,5 +1223,4 @@ class njModal {
 }
 //global options (we should call it only once)
 if (!njModal.g) njModal.g = getDefaultInfo();
-
 export default njModal;
