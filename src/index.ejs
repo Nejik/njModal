@@ -23,7 +23,7 @@
     .lorem {
       /*height: 2000px;*/
     }
-    .modal {
+    #modal {
       display: none;
     }
   </style>
@@ -32,17 +32,13 @@
 
 <body>
   <div class="lorem"></div>
-  <a href="#!" class="link">Open window</a>
-  <div class="modal">modal window ololo</div>
+  <a href="#modal" class="link">Open window</a>
+  <div id="modal">modal window ololo</div>
   <script src="njModal.js"></script>
   <script>
     var modal = new njModal({
-                              content: 'trololo',
-                              header: 'header',
-                              footer: 'footer',
+                              elem: '.link'
                             })
-    modal.show();
-    // console.log(modal);
   </script>
 </body>
 

@@ -46,7 +46,6 @@ class njModal {
     let o = this.o = $.extend({}, njModal.defaults, opts),
       that = this;
 
-    // this.items = [];//list of all items
     this.active = 0;
 
     //inner options, current state of app
@@ -73,9 +72,24 @@ class njModal {
       this._error('njModal, no elements or content for modal.');
       return;
     }
+    if (o.elem) {
+      let $elem = $(o.elem);
+      if ($elem.length > 1) $elem = $($elem[0]);
+      if ($elem[0].njModal) {
+        this._error('njModal, already inited on this element');
+        return;
+      }
+      $elem[0].njModal = this; //prevent multiple initialization on one element
+
+      //extend global options with gathered from dom element
+      $.extend(true, this.o, this._gatherData($elem))
+
+      //gather dom elements from which we will create modal window/gallery, this method will be replaced in gallery addon
+      this.els = this._gatherElements();
+    }
 
     //create items
-    this.items = this._createItems(this.els || [this.o]);
+    this.items = this._createItems(this._createRawItems());
 
     //create popup container dom elements
     this._createDom();
@@ -220,6 +234,86 @@ class njModal {
 
     d.containerMaxScrollTop = d.containerScrollHeight - d.containerHeight;
   }
+  //return array with raw options gathered from items from which gallery/modal will be created, this method will be replaced in gallery addon
+  _createRawItems = function () {
+    return [this.o];
+  }
+  //gather dom elements from which we will create modal window/gallery, this method will be replaced in gallery addon
+  _gatherElements = function () {
+    return this.o.el;
+  }
+  _gatherData = function (el) {
+    let o = this.o,
+      $el = $(el),
+      dataO = $el.data(),//data original
+      dataProcessed = {};//data processed
+
+    if (!$el.length) {
+      return dataProcessed;
+    }
+
+    if (dataO.njmOptions) {
+      try {
+        dataProcessed = $.parseJSON(dataO.njmOptions);
+        delete dataO.njmOptions;
+      }
+      catch (e) {
+        this._error('njBox, fail to parse options from njm-options');
+        return;
+      }
+    }
+    if ($el.length) {
+      dataProcessed.el = $el
+    }
+
+    //try to get href from original attributes
+    if ($el[0].tagName.toLowerCase() === 'a') {
+      var href = $el.attr('href');
+      if (href && href !== '#' && href !== '#!' && !(/^(?:javascript)/i).test(href)) {//test href for real info, not placeholder
+        dataProcessed.content = href;
+      }
+    }
+
+    //get title
+    if (o.title_attr) {
+      var title_attr = $el.attr(o.title_attr);
+      if (title_attr) dataProcessed.title = title_attr;
+    }
+
+    $.extend(true, dataProcessed, choosePrefixedData(dataO))
+
+    function choosePrefixedData(data) {
+      var prefixedData = {};
+
+      for (var p in data) {//use only data properties with njm prefix
+        if (data.hasOwnProperty(p) && /^njm[A-Z]+/.test(p)) {
+          var shortName = p.match(/^njm(.*)/)[1],
+            shortNameLowerCase = shortName.charAt(0).toLowerCase() + shortName.slice(1);
+
+          prefixedData[shortNameLowerCase] = transformType(data[p]);
+        }
+      }
+
+      return prefixedData;
+    }
+
+
+    function transformType(val) {//transform string from data attributes to boolean and number
+      var parsedFloat = parseFloat(val);
+      if (val === 'true') {
+        return true;
+      } else if (val === 'false') {
+        return false;
+      } else if (!isNaN(parsedFloat)) {
+        return parsedFloat;
+      } else {
+        return val;
+      }
+    }
+
+    this._cb('data_gathered', dataProcessed, $el[0]);
+    return dataProcessed;
+  }
   _createItems = function (els) {
     let items = [];
     for (let i = 0, l = els.length; i < l; i++) {
@@ -231,26 +325,21 @@ class njModal {
     let normalizedItem = this._normalizeItem(item);
 
     this._createDomForItem(normalizedItem);
-    this._insertContentInItem(normalizedItem);
 
-    // console.log(normalizedItem.dom.modal[0].outerHTML);
     return normalizedItem;
   }
-  _normalizeItem = function (item) {
-    let normalizedItem = {
+  _normalizeItem = function (item, el) {
+    return {
       content: item.content || this.o.text._missedContent,
-      type: item.type || this._type(item.content),
+      type: item.type || this._type(item.content || this.o.text._missedContent),
       header: item.header,
       footer: item.footer,
       title: item.title,
-      el: item.dom,
-      template: item.template,
+      el: item.el || el,
       o: {
         status: 'inited'
       }
-    };
-
-    return normalizedItem;
+    }
   }
   _type = function (content) {//detect content type
     var type = 'html';
@@ -295,17 +384,22 @@ class njModal {
       that._error('njModal, error in o.templates.body');
       return;
     }
+
+    this._insertItemBodyContent(item);
+
     modalFragment.appendChild(dom.body[0])
 
     //insert header
     if (item.header) {
       dom.header = $(o.templates.header);
 
-      // because of custom templates, we need to check in what element we should insert header data
       if (!dom.header.length) {
         that._error('njModal, error in o.templates.header');
         return;
       }
+      //insert header info
+      var headerInput = (dom.header[0].getAttribute('data-njm-header') !== null) ? headerInput = dom.header : headerInput = dom.header.find('[data-njm-header]')
+      headerInput[0].innerHTML = item.header;
 
       modalFragment.insertBefore(dom.header[0], modalFragment.firstChild)
     }
@@ -318,6 +412,9 @@ class njModal {
         that._error('njModal, error in njModal.templates.footer');
         return;
       }
+      //insert footer info
+      var footerInput = (dom.footer[0].getAttribute('data-njm-footer') !== null) ? footerInput = dom.footer : footerInput = dom.footer.find('[data-njm-footer]')
+      footerInput[0].innerHTML = item.footer;
 
       modalFragment.appendChild(dom.footer[0])
     }
@@ -333,20 +430,6 @@ class njModal {
     dom.modal[0].appendChild(modalFragment)
 
     this._cb('item_dom_created', item);
-  }
-  _insertContentInItem = function (item) {
-    //insert header info
-    var headerInput = (item.dom.header[0].getAttribute('data-njm-header') !== null) ? headerInput = item.dom.header : headerInput = item.dom.header.find('[data-njm-header]')
-    headerInput[0].innerHTML = item.header;
-
-    //insert footer info
-    var footerInput = (item.dom.footer[0].getAttribute('data-njm-footer') !== null) ? footerInput = item.dom.footer : footerInput = item.dom.footer.find('[data-njm-footer]')
-    footerInput[0].innerHTML = item.footer;
-
-    //insert body
-    this._insertItemBodyContent(item);
-
-    this._cb('item_content_inserted', item);
   }
   _insertItemBodyContent = function (item) {
     var o = this.o;
@@ -534,97 +617,7 @@ class njModal {
       if (focusElement.length) focusElement[0].focus();
     }
   }
-  // _gatherElements = function (elem) {
-  //   let that = this,
-  //     $elem;
-  //   if (!elem) {
-  //     this._cb('elements_gathered', elem);
-  //     return;
-  //   }
 
-  //   $elem = $(elem);
-
-  //   if ($elem.length > 1) {
-  //     $elem = $($elem[0])
-  //   }
-
-  //   if ($elem[0].njModal) {
-  //     this._error('njModal, already inited on this element', true);
-  //     return;
-  //   }
-  //   $elem[0].njModal = this; //prevent multiple initialization on one element
-
-  //   //extend global options with gathered from dom element
-  //   $.extend(true, this.o, this._gatherData($elem[0]))
-
-  //   this._cb('elements_gathered', $elem[0]);
-  //   return $elem;
-  // }
-  // _gatherData = function (el) {
-  //   let o = this.o,
-  //     $el = $(el),
-  //     dataO = $el.data(),//data original
-  //     dataProcessed = {};//data processed
-
-  //   if (dataO.njmOptions) {
-  //     try {
-  //       dataProcessed = $.parseJSON(dataO.njmOptions);
-  //       delete dataO.njmOptions;
-  //     }
-  //     catch (e) {
-  //       this._error('njModal, fail to parse json from njm-options', true);
-  //       return;
-  //     }
-  //   }
-
-  //   //try to get href from original attributes
-  //   if ($el[0].tagName.toLowerCase() === 'a') {
-  //     let href = $el.attr('href');
-  //     if (href && href !== '#' && href !== '#!' && !(/^(?:javascript)/i).test(href)) {//test href for real info, not placeholder
-  //       dataProcessed.content = href;
-  //     }
-  //   }
-
-  //   //get title
-  //   if (o.titleAttr) {
-  //     let titleAttr = $el.attr(o.titleAttr);
-  //     if (titleAttr) dataProcessed.title = titleAttr;
-  //   }
-
-  //   $.extend(true, dataProcessed, choosePrefixedData(dataO))
-
-  //   function choosePrefixedData(data) {
-  //     var prefixedData = {};
-
-  //     for (var p in data) {//use only data properties with njm prefix
-  //       if (data.hasOwnProperty(p) && /^njm[A-Z]+/.test(p)) {
-  //         var shortName = p.match(/^njm(.*)/)[1],
-  //           shortNameLowerCase = shortName.charAt(0).toLowerCase() + shortName.slice(1);
-
-  //         prefixedData[shortNameLowerCase] = transformType(data[p]);
-  //       }
-  //     }
-
-  //     return prefixedData;
-  //   }
-
-
-  //   function transformType(val) {//transform string from data attributes to boolean and number
-  //     var parsedFloat = parseFloat(val);
-  //     if (val === 'true') {
-  //       return true;
-  //     } else if (val === 'false') {
-  //       return false;
-  //     } else if (!isNaN(parsedFloat)) {
-  //       return parsedFloat;
-  //     } else {
-  //       return val;
-  //     }
-  //   }
-
-  //   this._cb('data_gathered', dataProcessed, $el[0]);
-  //   return dataProcessed;
-  // }
 
 
   _setClickHandlers = function () {//initial click handlers
@@ -1082,7 +1075,7 @@ class njModal {
     }
   }
 
-  
+
   _clear = function () {
     var o = this.o,
       that = this;
