@@ -523,11 +523,7 @@ class njModal {
     //insert index item
     this._insertSelectorElements();
 
-    if (o.centering === 'css') {
-      this.v.items[0].appendChild(item.dom.modalOuter[0]);
-    } else if (o.centering === 'js') {
-      this.v.items[0].appendChild(item.dom.modal[0]);
-    }
+    this.v.items[0].appendChild(item.dom.modalOuter[0]);
 
     this._cb('item_inserted', item, index);
   }

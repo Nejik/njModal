@@ -101,7 +101,6 @@ export let defaults = {
 	elem: '',//(selector || dom\jQuery element) dom element for triggering modal (it should be single elements, if plugin will found here few elements, instance of gallery will be created)
 	container: 'body',//(selector) appends modal to specific element
 	position: 'fixed',//(fixed || absolute), how popup will be positioned. For most cases fixed is good, but when we insert popup inside element, not document, absolute position sets automatically
-	centering: 'css',//(css || js) what method we should use to center our modal, in css mode we use some hacky trick with inline-block, in js way we calculation position by javascript. CSS is preferred way
 	click: true,//(boolean) should we set click handler on element(o.elem)?
 	clickels: '',//(selector || dom\jQuery element) additional elements that can trigger same modal window (very often on landing pages you need few links to open one modal window)
 
