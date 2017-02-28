@@ -108,7 +108,7 @@ export let defaults = {
 	overlay: true,//(boolean) should we show overlay? true - show overlay for every popup
 	overlayassist: true,//(boolean) if true, animation durations of modal will automatically sets to overlay to be in sync
 	scrollbar: 'hide',//(show || hide) should we hide scrollbar from page?
-	out: true,//(boolean) click outside modal will close it
+	out: true,//(boolean) click outside modal will close it, false also adds fancy animation when somebody tries to close modal with outside click
 	esc: true,//(boolean) close modal when esc button pressed?
 	close: 'outside',//(inside || outside || boolean false) add close button inside or outside popup or don't add at all
 	// autoheight: 'image',//(boolean || image) should we set maximum height of modal? if image is selected, only images will be autoheighted

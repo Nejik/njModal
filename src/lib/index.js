@@ -61,8 +61,7 @@ class njModal {
 
     //inner options, this settings alive throughout the life cycle of the plugin(until destroy)
     this._globals = {
-      //todo, вынести в аддон галереи
-      // canChange: true//flag, that shows we can change item
+      
     }
     this._handlers = {};//all callback functions we used in event listeners lives here
 
@@ -527,7 +526,6 @@ class njModal {
     if (o.centering === 'css') {
       this.v.items[0].appendChild(item.dom.modalOuter[0]);
     } else if (o.centering === 'js') {
-      //todo, сделать позиционирование через js
       this.v.items[0].appendChild(item.dom.modal[0]);
     }
 
@@ -886,7 +884,7 @@ class njModal {
           if (o.overlayassist) this.v.overlay[0].style.cssText = njModal.g.transitionDuration.css + ':' + njModal.g.animShowDur + 'ms';
 
           //insert overlay div
-          if (o.position === 'absolute') this.v.overlay.css('position', 'absolute');
+          if (o.position === 'absolute') this.v.overlay.addClass('njm_absolute');
           this.v.container[0].appendChild(this.v.overlay[0]);
 
           // this.v.overlay[0].clientHeight;
@@ -901,7 +899,7 @@ class njModal {
 
       case 'hide':
         if (!this.state.overlayVisible) return;
-        if (o.overlayassist) this.v.overlay[0].style.cssText = njModal.g.transitionDuration.css + ':' + njModal.g.animHideDur + 'ms';
+        if (o.overlayassist) this.v.overlay[0].style.cssText += njModal.g.transitionDuration.css + ':' + njModal.g.animHideDur + 'ms';
 
         this.v.overlay.removeClass('njm-visible');
 
@@ -1154,17 +1152,6 @@ class njModal {
     if (typeof o['on' + type] === 'function') {
       callbackResult = o['on' + type].apply(this, clearArgs);
     }
-
-
-    //trigger on document
-    // var args = Array.prototype.slice.call(arguments, 1);
-    // args.unshift(this);
-    // this.v.document.triggerHandler('njm_'+type, args);
-
-
-    //trigger on element
-    //todo make trigger on element option
-    // if(o.$elem && o.$elem.length) o.$elem.triggerHandler('njm_'+type, args);
     return callbackResult;
   }
   _cbStuff = function (type) {
@@ -1174,10 +1161,6 @@ class njModal {
       case 'shown':
         this._setFocusInPopup();
 
-        // todo, preload for gallery
-        // setTimeout(function() {
-        //   if(njModal.a.gallery)that._preload();//start preload only after all animations is probably complete..
-        // }, 500);
         break;
       case  'hide':
         if(this.state.clickedEl) this.state.clickedEl.focus();

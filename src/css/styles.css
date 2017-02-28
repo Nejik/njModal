@@ -1,8 +1,8 @@
 .njm_relative {
-  position: relative;
+  position: relative !important;
 }
 .njm_absolute {
-  position: absolute;
+  position: absolute !important;
 }
 .njm_hidden {
   display: none;
