@@ -646,17 +646,17 @@ class njModal {
     var o = this.o;
     // if(document.activeElement) document.activeElement.blur();//check for existances needed for ie... ofc. Oh lol, if focus on body and we call blur, ie9/10 switches windows like alt+tab Oo
     //
-    this.items[this.active].dom.modal[0].focus();
 
+    //try to focus close buttons
     if (o.close === "outside") {
       this.v.close[0].focus()
     } else if (o.close === "inside") {
       this.items[this.active].dom.close[0].focus();
-    }
-
-    if (o.focus) {
+    } else if(o.focus) {//then try to fucos active elements inside popup
       var focusElement = this.items[this.active].dom.modal.find(o.focus);
       if (focusElement.length) focusElement[0].focus();
+    } else {//then focus popup itself
+      this.items[this.active].dom.modal[0].focus();
     }
   }
 
