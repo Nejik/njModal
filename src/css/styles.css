@@ -62,8 +62,6 @@
   overflow: auto;
   text-align: center;
   white-space: nowrap;
-  font-size: 0;/*fixes vertical magic margin between inline-block elements*/
-  /*will-change:transform, opacity;*/
 
   transition: left 350ms, transform 350ms;
   
@@ -78,7 +76,6 @@
   display: inline-block;
   height: 100%;
   vertical-align: middle;
-  margin-right: -.25em;/*fixes horizontal magic margin between inline-block elements*/
 }
 
 .njm {
@@ -91,7 +88,6 @@
   vertical-align: middle;
 
   white-space: normal;
-  font-size: medium;
 
   user-select: text;
 }
