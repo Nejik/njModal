@@ -1,13 +1,13 @@
-.njm_relative {
+.njm-relative {
   position: relative !important;
 }
-.njm_absolute {
+.njm-absolute {
   position: absolute !important;
 }
-.njm_hidden {
+.njm-hidden {
   display: none;
 }
-.njm_hideScrollbar {
+.njm-hideScrollbar {
   overflow: hidden !important;
 }
 
@@ -132,7 +132,7 @@
 .njm-autoheight .njm-outer {
 	overflow-y: hidden;
 }
-.njm-autoheight-true .njm-body {
+.njm-autoheight--true .njm__body {
 	overflow-y: auto;
 }
 

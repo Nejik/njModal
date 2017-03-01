@@ -132,7 +132,7 @@ class njModal {
     } else {
       this.v.container[0].njm_instances++;
     }
-    this.v.container.addClass('njm_open');
+    this.v.container.addClass('njm-open');
 
     this._scrollbar('hide');
 
@@ -251,8 +251,8 @@ class njModal {
     if (!o.autoheight || o.autoheight === 'image' && item.type !== 'image') return;
 
     if (!this.state.autoheightAdded) {
-      this.v.items.addClass('njm-autoheight');
-      (o.autoheight === true) ? this.v.items.addClass('njm-autoheight-true') : this.v.items.addClass('njm-autoheight-image')
+      this.v.wrap.addClass('njm-autoheight');
+      (o.autoheight === true) ? this.v.wrap.addClass('njm-autoheight--true') : this.v.wrap.addClass('njm-autoheight--image')
       this.state.autoheightAdded = true
     }
 
@@ -530,7 +530,7 @@ class njModal {
     }
     //check if container not relative position
     if (this.v.container[0] !== this.v.body[0] && this.v.container.css('position') === 'static') {
-      this.v.container.addClass('njm_relative');
+      this.v.container.addClass('njm-relative');
     }
 
     //create core elements
@@ -547,7 +547,7 @@ class njModal {
 
     //if container custom element(not body), use forcely absolute position
     if (this.v.container[0] !== this.v.body[0]) o.position = 'absolute';
-    if (o.position === 'absolute') this.v.wrap.addClass('njm_absolute');
+    if (o.position === 'absolute') this.v.wrap.addClass('njm-absolute');
 
     // insert outside close button
     if (o.close === 'outside') {
@@ -856,7 +856,7 @@ class njModal {
               this.state.scrollbarHidden = true;
 
               //existing of that variable means that other instance of popup hides scrollbar on this element already
-              this.v.html.addClass('njm_hideScrollbar');
+              this.v.html.addClass('njm-hideScrollbar');
               this.v.html.css('paddingRight', parseInt(this.v.html.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
             }
           } else {
@@ -867,7 +867,7 @@ class njModal {
 
               this.state.scrollbarHidden = true;
 
-              this.v.container.addClass('njm_hideScrollbar');
+              this.v.container.addClass('njm-hideScrollbar');
               this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
 
             }
@@ -893,7 +893,7 @@ class njModal {
         }
 
         if (this.v.container[0] === this.v.body[0]) {
-          this.v.html.removeClass('njm_hideScrollbar');
+          this.v.html.removeClass('njm-hideScrollbar');
           var computedPadding = parseInt(this.v.html.css('paddingRight')) - njModal.g.scrollbarSize;
 
           if (computedPadding) {//if greater than 0
@@ -903,7 +903,7 @@ class njModal {
           }
         } else {
 
-          this.v.container.removeClass('njm_hideScrollbar');
+          this.v.container.removeClass('njm-hideScrollbar');
           var computedPadding = parseInt(this.v.container.css('paddingRight')) - njModal.g.scrollbarSize;
 
           if (computedPadding) {//if greater than 0
@@ -932,7 +932,7 @@ class njModal {
           if (o.overlayassist) this.v.overlay.css('transitionDuration', this._globals.animShowDur + 'ms')
 
           //insert overlay div
-          if (o.position === 'absolute') this.v.overlay.addClass('njm_absolute');
+          if (o.position === 'absolute') this.v.overlay.addClass('njm-absolute');
           this.v.container[0].appendChild(this.v.overlay[0]);
 
           // this.v.overlay[0].clientHeight;
@@ -1123,7 +1123,7 @@ class njModal {
     var o = this.o;
 
     this.v.container[0].njm_instances--;
-    this.v.container.removeClass('njm_open');//remove only from last closing instance
+    if(this.v.container[0].njm_instances === 0) this.v.container.removeClass('njm-open');
 
     if (o['class']) this.v.wrap.removeClass(o['class']);
 
