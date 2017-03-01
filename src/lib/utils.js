@@ -134,9 +134,9 @@ export let defaults = {
 		overlay: '<div class="njm-overlay"></div>',
 		modalOuter: '<div class="njm-outer" data-njm-outer></div>',
 		modal: '<aside class="njm"></aside>',
-		body: '<div class="njm-body" data-njm-body></div>',
-		header: '<header class="njm-header" data-njm-header></header>',
-		footer: '<footer class="njm-footer" data-njm-footer></footer>',
+		body: '<div class="njm__body" data-njm-body></div>',
+		header: '<header class="njm__header" data-njm-header></header>',
+		footer: '<footer class="njm__footer" data-njm-footer></footer>',
 		close: '<button type="button" class="njm-close-system" data-njm-close>×</button>',
 		focusCatcher: '<a href="#!" class="njm-focus-catch">This link is just focus catcher of modal window, link do nothing.</a>',
 

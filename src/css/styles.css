@@ -136,7 +136,7 @@
 .njm-autoheight .njm-outer {
 	overflow-y: hidden;
 }
-.njm-autoheight-true .njm-content .njm-body {
+.njm-autoheight-true .njm-body {
 	overflow-y: auto;
 }
 
@@ -266,20 +266,20 @@
 }
 
 /*here we use nested selector .njm-content .njm because we also can have .njm-image .njm with image, and for this case we need other design  */
-.njm-content {
+.njm {
   border-radius: 2px;
   background-color: #fff;
   margin: 10px;
 }
-.njm-content .njm-header {
+.njm .njm__header {
   padding: 5px;
 }
-.njm-content .njm-body {
+.njm .njm__body {
   padding: 5px;
 }
-.njm-content .njm-footer {
+.njm .njm__footer {
   padding: 5px;
 }
-.njm-image img {
+.njm--image img {
   background-color: rgba(255,255,255,.1);
 }

@@ -494,17 +494,14 @@ class njModal {
       case 'text':
         'textContent' in item.dom.body[0] ? item.dom.body[0].textContent = item.content : item.dom.body[0].innerText = item.content;
 
-        item.dom.modal.addClass('njm-content');
         break;
       case 'html':
         item.dom.body[0].innerHTML = item.content;
 
-        item.dom.modal.addClass('njm-content');
         break;
       case 'selector':
         this._getItemFromSelector(item);
 
-        item.dom.modal.addClass('njm-content');
         break;
       default:
         this._error('njModal, seems that you use wrong type(' + item.type + ') of item.', true);

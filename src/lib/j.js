@@ -1,5 +1,4 @@
 //syntax sugar like jquery
-//ie 9-11 support
 
 //you can't create elements with this function
 let j = function (selector) {
