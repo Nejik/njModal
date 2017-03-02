@@ -4,8 +4,7 @@
 * примеры как сделать триггер ивентов на дом элемент/документ
 
 
-To polyfill
-
+To polyfill:
   querySelector
   dataset
   datalist
