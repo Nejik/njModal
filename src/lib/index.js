@@ -36,21 +36,6 @@ class njModal {
     this._init(opts);
   }
 
-  //addons
-  static a = {};
-
-  //default settings
-  static defaults = defaults;
-
-  static autobind = function () {
-    $(njModal.defaults.autobind).each(function () {
-      if (this.njModal) return;
-      new njModal({
-        elem: $(this)
-      })
-    })
-  }
-
   _init(opts) {
     let o = this.o = $.extend({}, njModal.defaults, opts);
 
@@ -173,7 +158,7 @@ class njModal {
 
     return this;
   }
-  position = function () {
+  position() {
     if (!this.state.inited) return;
 
     var o = this.o;
@@ -204,7 +189,7 @@ class njModal {
 
     return this;
   }
-  _getContainerSize = function () {
+  _getContainerSize() {
     var o = this.o;
 
     var d = this.state.dimensions = {}
@@ -245,7 +230,7 @@ class njModal {
     //  this._o.winWidth -= njModal.g.scrollbarSize;
     // }
   }
-  _setMaxHeight = function (item) {
+  _setMaxHeight(item) {
     let o = this.o;
 
     if (!o.autoheight || o.autoheight === 'image' && item.type !== 'image') return;
@@ -292,14 +277,14 @@ class njModal {
     // }
   }
   //return array with raw options gathered from items from which gallery/modal will be created, this method will be replaced in gallery addon
-  _createRawItems = function () {
+  _createRawItems() {
     return [this.o];
   }
   //gather dom elements from which we will create modal window/gallery, this method will be replaced in gallery addon
-  _gatherElements = function () {
+  _gatherElements() {
     return this.o.el;
   }
-  _gatherData = function (el) {
+  _gatherData(el) {
     let o = this.o,
       $el = $(el),
       dataO = $el.data(),//data original
@@ -371,21 +356,21 @@ class njModal {
     this._cb('data_gathered', dataProcessed, $el[0]);
     return dataProcessed;
   }
-  _createItems = function (els) {
+  _createItems(els) {
     let items = [];
     for (let i = 0, l = els.length; i < l; i++) {
       items.push(this._createItem(els[i]))
     }
     return items;
   }
-  _createItem = function (item) {
+  _createItem(item) {
     let normalizedItem = this._normalizeItem(item);
 
     this._createDomForItem(normalizedItem);
 
     return normalizedItem;
   }
-  _normalizeItem = function (item, el) {
+  _normalizeItem(item, el) {
     return {
       content: item.content || this.o.text._missedContent,
       type: item.type || this._type(item.content || this.o.text._missedContent),
@@ -398,7 +383,7 @@ class njModal {
       }
     }
   }
-  _type = function (content) {//detect content type
+  _type(content) {//detect content type
     var type = 'html';
 
     if (typeof content === 'object') {
@@ -415,7 +400,7 @@ class njModal {
 
     return type;
   }
-  _createDomForItem = function (item) {
+  _createDomForItem(item) {
     var o = this.o,
       dom = item.dom = {},
       modalFragment = document.createDocumentFragment();
@@ -487,7 +472,7 @@ class njModal {
 
     this._cb('item_dom_created', item);
   }
-  _insertItemBodyContent = function (item) {
+  _insertItemBodyContent(item) {
     var o = this.o;
 
     switch (item.type) {
@@ -512,14 +497,14 @@ class njModal {
 
     item.o.status = 'loaded';
   }
-  _getItemFromSelector = function (item) {
+  _getItemFromSelector(item) {
     item.o.contentEl = $(item.content);
 
     if (!item.o.contentEl.length) {
       item.dom.body[0].innerHTML = item.content;//if we don't find element with this selector
     }
   }
-  _createDom = function () {
+  _createDom() {
     var o = this.o;
 
     //find container
@@ -561,7 +546,7 @@ class njModal {
     this.v.focusCatcher = $(o.templates.focusCatcher);
     this.v.wrap[0].appendChild(this.v.focusCatcher[0]);
   }
-  _drawItem = function (index) {
+  _drawItem(index) {
     var o = this.o,
       item = this.items[index];
 
@@ -579,7 +564,7 @@ class njModal {
 
     this._cb('item_inserted', item, index);
   }
-  _insertSelectorElements = function () {
+  _insertSelectorElements() {
     var items = this.items,
       item,
       contentEl;
@@ -616,7 +601,7 @@ class njModal {
       }
     }
   }
-  _removeSelectorItemsElement = function () {
+  _removeSelectorItemsElement() {
     var items = this.items,
       item,
       contentEl;
@@ -642,7 +627,7 @@ class njModal {
       }
     }
   }
-  _setFocusInPopup = function () {
+  _setFocusInPopup() {
     var o = this.o;
     // if(document.activeElement) document.activeElement.blur();//check for existances needed for ie... ofc. Oh lol, if focus on body and we call blur, ie9/10 switches windows like alt+tab Oo
     //
@@ -662,7 +647,7 @@ class njModal {
 
 
 
-  _setClickHandlers = function () {//initial click handlers
+  _setClickHandlers() {//initial click handlers
     var o = this.o;
 
     if (!o.click) return;
@@ -676,7 +661,7 @@ class njModal {
       }
     }
   }
-  _clickHandler = function () {
+  _clickHandler() {
     //this method creates closure with modal instance
     var o = this.o,
       that = this;
@@ -702,7 +687,7 @@ class njModal {
       that.show();
     }
   }
-  _setEventsHandlers = function () {//all other event handlers
+  _setEventsHandlers() {//all other event handlers
     var o = this.o,
       that = this,
       h = this._handlers;
@@ -808,7 +793,7 @@ class njModal {
 
     this._cb('setEventHandlers');
   }
-  _removeEventsHandlers = function () {
+  _removeEventsHandlers() {
     var h = this._handlers;
 
     this.v.container.off('resize', h.container_resize)
@@ -841,7 +826,7 @@ class njModal {
 
 
 
-  _scrollbar = function (type) {
+  _scrollbar(type) {
     var o = this.o;
     switch (type) {
       case 'hide':
@@ -918,7 +903,7 @@ class njModal {
         break;
     }
   }
-  _overlay = function (type) {
+  _overlay(type) {
     var o = this.o,
       that = this;
 
@@ -961,7 +946,7 @@ class njModal {
   }
 
 
-  _calculateAnimations = function () {
+  _calculateAnimations() {
     var o = this.o,
       animShow,
       animHide,
@@ -1022,10 +1007,10 @@ class njModal {
     this._globals.animShowDur = animShowDur;
     this._globals.animHideDur = animHideDur;
   }
-  _getAnimTime = function (el, property) {//get max animation or transition time
+  _getAnimTime(el, property) {//get max animation or transition time
     return this._getMaxTransitionDuration(el, 'animation') || this._getMaxTransitionDuration(el, 'transition')
   }
-  _getMaxTransitionDuration = function (el, property) {//method also can get animation duration
+  _getMaxTransitionDuration(el, property) {//method also can get animation duration
     var $el = $(el),
       dur,
       durArr,
@@ -1061,7 +1046,7 @@ class njModal {
     return Math.max.apply(Math, transitions);
   }
 
-  _anim = function (type, callback) {
+  _anim(type, callback) {
     var o = this.o,
       that = this,
       modalOuter = this.items[this.active].dom.modalOuter,
@@ -1119,7 +1104,7 @@ class njModal {
   }
 
 
-  _clear = function () {
+  _clear() {
     var o = this.o;
 
     this.v.container[0].njm_instances--;
@@ -1150,14 +1135,14 @@ class njModal {
 
     this._cb('clear');
   }
-  _error = function (msg, clear) {
+  _error(msg, clear) {
     if (!msg) return;
 
     if (clear) this._clear();
 
     console.error(msg);
   }
-  _cb = function (type) {//cb - callback
+  _cb(type) {//cb - callback
     var o = this.o,
       callbackResult;
 
@@ -1202,7 +1187,7 @@ class njModal {
     }
     return callbackResult;
   }
-  _cbStuff = function (type) {
+  _cbStuff(type) {
     var o = this.o;
 
     switch (type) {
@@ -1220,19 +1205,19 @@ class njModal {
   }
 
   //event emitter
-  on = function (event, fct) {
+  on(event, fct) {
     this._events = this._events || {};
     this._events[event] = this._events[event] || [];
     this._events[event].push(fct);
     return this;
   }
-  off = function (event, fct) {
+  off(event, fct) {
     this._events = this._events || {};
     if (event in this._events === false) return;
     this._events[event].splice(this._events[event].indexOf(fct), 1);
     return this;
   }
-  trigger = function (event /* , args... */) {
+  trigger(event /* , args... */) {
     this._events = this._events || {};
     if (event in this._events === false) return;
     for (var i = 0; i < this._events[event].length; i++) {
@@ -1241,6 +1226,21 @@ class njModal {
     return this;
   }
 }
-//global options (we should call it only once)
+//global options
+
+//addons
+njModal.a = {}
+//default settings
+njModal.defaults = defaults;
+//autobind functions
+njModal.autobind = function () {
+    $(njModal.defaults.autobind).each(function () {
+      if (this.njModal) return;
+      new njModal({
+        elem: $(this)
+      })
+    })
+  }
+
 if (!njModal.g) njModal.g = getDefaultInfo();
 export default njModal;
