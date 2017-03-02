@@ -419,45 +419,49 @@ class njModal {
 
     dom.modalOuter[0].appendChild(dom.modal[0]);
 
-    //insert body
-    dom.body = $(o.templates.body);
-    if (!dom.body.length) {
-      this._error('njModal, error in o.templates.body');
-      return;
-    }
-
-    this._insertItemBodyContent(item);
-
-    modalFragment.appendChild(dom.body[0])
-
-    //insert header
-    if (item.header) {
-      dom.header = $(o.templates.header);
-
-      if (!dom.header.length) {
-        this._error('njModal, error in o.templates.header');
+    if (item.type === "template") {
+      dom.modal[0].innerHTML = o.template || o.content;
+    } else {
+      //insert body
+      dom.body = $(o.templates.body);
+      if (!dom.body.length) {
+        this._error('njModal, error in o.templates.body');
         return;
       }
-      //insert header info
-      var headerInput = (dom.header[0].getAttribute('data-njm-header') !== null) ? headerInput = dom.header : headerInput = dom.header.find('[data-njm-header]')
-      headerInput[0].innerHTML = item.header;
 
-      modalFragment.insertBefore(dom.header[0], modalFragment.firstChild)
-    }
+      this._insertItemBodyContent(item);
 
-    //insert footer
-    if (item.footer) {
-      dom.footer = $(o.templates.footer);
+      modalFragment.appendChild(dom.body[0])
 
-      if (!dom.footer.length) {
-        this._error('njModal, error in njModal.templates.footer');
-        return;
+      //insert header
+      if (item.header) {
+        dom.header = $(o.templates.header);
+
+        if (!dom.header.length) {
+          this._error('njModal, error in o.templates.header');
+          return;
+        }
+        //insert header info
+        var headerInput = (dom.header[0].getAttribute('data-njm-header') !== null) ? headerInput = dom.header : headerInput = dom.header.find('[data-njm-header]')
+        headerInput[0].innerHTML = item.header;
+
+        modalFragment.insertBefore(dom.header[0], modalFragment.firstChild)
       }
-      //insert footer info
-      var footerInput = (dom.footer[0].getAttribute('data-njm-footer') !== null) ? footerInput = dom.footer : footerInput = dom.footer.find('[data-njm-footer]')
-      footerInput[0].innerHTML = item.footer;
 
-      modalFragment.appendChild(dom.footer[0])
+      //insert footer
+      if (item.footer) {
+        dom.footer = $(o.templates.footer);
+
+        if (!dom.footer.length) {
+          this._error('njModal, error in njModal.templates.footer');
+          return;
+        }
+        //insert footer info
+        var footerInput = (dom.footer[0].getAttribute('data-njm-footer') !== null) ? footerInput = dom.footer : footerInput = dom.footer.find('[data-njm-footer]')
+        footerInput[0].innerHTML = item.footer;
+
+        modalFragment.appendChild(dom.footer[0])
+      }
     }
 
     //insert close button
@@ -481,7 +485,7 @@ class njModal {
 
         break;
       case 'html':
-        item.dom.body[0].innerHTML = item.content;
+        item.dom.modal[0].innerHTML = item.content;
 
         break;
       case 'selector':
@@ -1240,6 +1244,41 @@ njModal.autobind = function () {
       elem: $(this)
     })
   })
+}
+njModal.alert = function (content = njModal.defaults._missedContent, okCb, cancelCb) {
+  let template = `<div class="njm__body">${content}</div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button></div>`;
+
+  return new njModal({
+    content: template,
+    type: 'template',
+    onok: okCb,
+    oncancel: cancelCb
+  }).show();
+}
+njModal.confirm = function (content = njModal.defaults._missedContent, okCb, cancelCb) {
+  let template = `<div class="njm__body">${content}</div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
+
+  return new njModal({
+    content: template,
+    type: 'template',
+    onok: okCb,
+    oncancel: cancelCb
+  }).show();
+}
+njModal.prompt = function (content = njModal.defaults._missedContent, placeholder, okCb, cancelCb) {
+  if(typeof placeholder === 'function') {
+		cancelCb = okCb;
+		okCb = placeholder;
+		placeholder = '';
+	}
+  let template = `<div class="njm__body">${content}<br/><input class="njm-prompt-input" data-njm-prompt-input type="text" placeholder="${placeholder}" /></div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
+
+  return new njModal({
+    content: template,
+    type: 'template',
+    onok: okCb,
+    oncancel: cancelCb
+  }).show();
 }
 
 if (!njModal.g) njModal.g = getDefaultInfo();

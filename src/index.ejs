@@ -27,14 +27,14 @@
       max-width: 500px;
       display: none;
     }
-    .njm-header {
+    /*.njm-header {
       background-color: tomato;
       line-height: 50px;
     }
     .njm-footer {
       background-color: cyan;
       line-height: 50px;
-    }
+    }*/
     .container {
       width: 500px;
       height:500px;
@@ -109,6 +109,14 @@
     var modal = new njModal({
                               elem: '.link'
                             })
+
+
+
+                            njModal.prompt('test', 'pnh', function () {
+                              console.log('ok');
+                            }, function() {
+                              console.log('cancel');
+                            });
   </script>
 </body>
 

@@ -303,11 +303,15 @@ j.fn.css = function (prop, value) {
 j.fn.hasClass = function (classname) {
     return this[0].classList.contains(classname);
 }
-j.fn.addClass = function (classname) {
-    return this.each(function () {
-        this.classList.add(classname)
+j.fn.addClass = function (classes) {
+    var arr = classes.split(' ');
+
+    return this.each(function() {
+        for (var i = 0, l = arr.length; i < l ;i++) {
+            this.classList.add(arr[i]);
+        }
     });
-}
+  }
 j.fn.removeClass = function (classname) {
     return this.each(function () {
         this.classList.remove(classname)

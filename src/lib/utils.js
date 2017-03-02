@@ -154,7 +154,7 @@ export let defaults = {
 
 	content: undefined,//(string) content for modal
 	_missedContent: 'njModal plugin: meow, put some content here...',//this string uses, when slide have no content
-	type: '',//(html || selector || text || image) type of content, if selector used, whole element will be inserted in modal
+	type: '',//(html || selector || text || template) type of content, if selector used, whole element will be inserted in modal. Template simila to html, but template inserted without .njm__body tag, directly to .njm
 	header: undefined,//(html) html that will be added as modal header (for first slide)
 	footer: undefined,//(html) html that will be added as modal footer (for first slide)
 
