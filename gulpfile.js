@@ -221,6 +221,6 @@ gulp.task('serve', function (cb) {//serve contains js task, because of webpack i
 
 gulp.task('build', gulp.parallel('html', 'css', 'webpack'))
 
-gulp.task('prod', gulp.series(gulp.parallel('clean', 'setProduction'), 'build', 'css:mergeStyles', 'css:cleanFiles'))
+gulp.task('prod', gulp.series(gulp.parallel('clean', 'setProduction'), gulp.parallel('css', 'webpack'), 'css:mergeStyles', 'css:cleanFiles'))
 
 gulp.task('default', gulp.series('html', 'css', gulp.parallel('serve','watch')))
