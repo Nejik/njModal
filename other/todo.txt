@@ -1,6 +1,3 @@
-+ add main field in package.json
-* сделать типы из _insertItemBodyContent в расширяемом объекте на классе
-* сделать промисы на contentinserted
 * примеры как сделать триггер ивентов на дом элемент/документ
 
 
