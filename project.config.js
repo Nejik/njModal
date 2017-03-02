@@ -48,25 +48,6 @@ let paths = {
     src: [root.resolve('src/lib/index.js')],
     concat: 'njModal.js',//final name of builded js file
     dist: dist
-  },
-  
-  img: {
-    dir: root.resolve('src/img'),
-    src: root.resolve('src/img/**/*.{jpg,jpeg,png,svg,gif,webp}'),
-    dist: root.resolve(distString+'/img'),
-    watch: root.resolve('src/img/**/*.{jpg,jpeg,png,svg,gif,webp}')
-  },
-  
-  svgSprites: {
-    src: 'src/img/sprites/svg/**/*.svg',
-    concat: 'icons.svg',
-    dist: root.resolve(distString+'/img'),
-  },
-  
-  svgColoredSprites: {
-    src: 'src/img/sprites/svgColored/**/*.svg',
-    concat: 'iconsColored.svg',
-    dist: root.resolve(distString+'/img'),
   }
 }
 

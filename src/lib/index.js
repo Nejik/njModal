@@ -637,7 +637,7 @@ class njModal {
       this.v.close[0].focus()
     } else if (o.close === "inside") {
       this.items[this.active].dom.close[0].focus();
-    } else if(o.focus) {//then try to fucos active elements inside popup
+    } else if (o.focus) {//then try to fucos active elements inside popup
       var focusElement = this.items[this.active].dom.modal.find(o.focus);
       if (focusElement.length) focusElement[0].focus();
     } else {//then focus popup itself
@@ -1108,7 +1108,7 @@ class njModal {
     var o = this.o;
 
     this.v.container[0].njm_instances--;
-    if(this.v.container[0].njm_instances === 0) this.v.container.removeClass('njm-open');
+    if (this.v.container[0].njm_instances === 0) this.v.container.removeClass('njm-open');
 
     if (o['class']) this.v.wrap.removeClass(o['class']);
 
@@ -1234,13 +1234,13 @@ njModal.a = {}
 njModal.defaults = defaults;
 //autobind functions
 njModal.autobind = function () {
-    $(njModal.defaults.autobind).each(function () {
-      if (this.njModal) return;
-      new njModal({
-        elem: $(this)
-      })
+  $(njModal.defaults.autobind).each(function () {
+    if (this.njModal) return;
+    new njModal({
+      elem: $(this)
     })
-  }
+  })
+}
 
 if (!njModal.g) njModal.g = getDefaultInfo();
 export default njModal;

@@ -5,9 +5,7 @@ const cssAssets  = require('postcss-assets');
 const cssNext = require('postcss-cssnext');
 const cssNano = require('cssnano');
 const cssMqPacker = require('css-mqpacker');
-const cssInlineSvg = require('postcss-inline-svg');
 const cssReporter = require('postcss-reporter');
-const cssSprite = require('postcss-sprites');
 
 let postcssConfig = {
   //just comment: in webpack we should sent object with field plugins and array of plugins, but in gulp we should send only array, not object
@@ -22,33 +20,13 @@ let postcssConfig = {
     }),
     cssNext,
     cssAssets({
-      basePath: config.src,
-      loadPaths: [config.img.dir]
-    }),
-    cssInlineSvg({ 
-      path: config.src,
-      removeFill: true
+      basePath: config.src
     }),
     cssMqPacker({
       sort: true
     }),
     cssReporter({
       throwError:true
-    }),
-    cssSprite({
-        stylesheetPath : config.css.dist,
-        spritePath: config.img.dist,
-        basePath: config.src,
-        spritesmith: {
-          padding: 5
-        },
-        verbose: config.isVerbose,
-        filterBy: function(image) {
-          if (image.url.indexOf('/sprites/') === -1) {
-            return Promise.reject(new Error('Not in sprite folder.'));
-          }
-          return Promise.resolve();
-        }
     })
   ]
 }

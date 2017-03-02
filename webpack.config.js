@@ -10,7 +10,7 @@ const pkg = require('./package.json');
 
 const babelConfig = Object.assign({}, pkg.babel, {
   babelrc: false,
-  cacheDirectory: true,
+  cacheDirectory: true
 });
 
 const webpackConfig = {
