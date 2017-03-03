@@ -140,10 +140,6 @@ export let defaults = {
 		close: '<button type="button" class="njm-close-system" data-njm-close>×</button>',
 		focusCatcher: '<a href="#!" class="njm-focus-catch">This link is just focus catcher of modal window, link do nothing.</a>',
 
-		// alert         : '<div class="njm-body">${content}</div><div class="njm-footer"><button data-njm-ok>${ok}</button></div>',
-		// confirm       : '<div class="njm-body">%content%</div><div class="njm-footer"><button data-njm-ok>%ok%</button><button data-njm-cancel>%cancel%</button></div>',
-		// prompt        : '<div class="njm-body">%content%<br/><input class="njm-prompt-input" data-njm-prompt-input type="text" placeholder="%placeholder%" /></div><div class="njm-footer"><button data-njm-ok>%ok%</button><button data-njm-cancel>%cancel%</button></div>'
-
 		//todo, in gallery
 		// _preloader:   '<div class="njm-preloader"><div class="njm-preloader-inner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div></div></div>'
 		// ui:          '<div class="njm-ui"><div class="njm-ui-title-outer"><div class="njm-ui-title-inner" data-njm-title></div></div></div>',

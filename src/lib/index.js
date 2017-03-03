@@ -373,7 +373,7 @@ class njModal {
   _normalizeItem(item, el) {
     let evaluatedContent;
     if (typeof item.content === 'function') {
-      evaluatedContent = item.content.call(this);
+      evaluatedContent = item.content.call(this, item);
     }
     
     return {
@@ -1249,40 +1249,61 @@ njModal.autobind = function () {
     })
   })
 }
-njModal.alert = function (content = njModal.defaults._missedContent, okCb, cancelCb) {
-  let template = `<div class="njm__body">${content}</div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button></div>`;
-
+njModal.alert = function (content, okCb, cancelCb) {
   return new njModal({
-    content: template,
-    type: 'template',
-    onok: okCb,
-    oncancel: cancelCb
-  }).show();
+                        content: function(rawitem) {
+                          return `<div class="njm__body">
+                                    ${content || this.o.text._missedContent}
+                                  </div>
+                                  <div class="njm__footer">
+                                    <button data-njm-ok>${this.o.text.ok}</button>
+                                  </div>`;
+                        },
+                        type:'template',
+                        onok: okCb,
+                        oncancel: cancelCb
+                      }).show()
 }
-njModal.confirm = function (content = njModal.defaults._missedContent, okCb, cancelCb) {
-  let template = `<div class="njm__body">${content}</div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
-
+njModal.confirm = function (content, okCb, cancelCb) {
   return new njModal({
-    content: template,
-    type: 'template',
-    onok: okCb,
-    oncancel: cancelCb
-  }).show();
+                        content: function(rawitem) {
+                          return `<div class="njm__body">
+                                    ${content || this.o.text._missedContent}
+                                  </div>
+                                  <div class="njm__footer">
+                                    <button data-njm-ok>${this.o.text.ok}</button>
+                                    <button data-njm-cancel>${this.o.text.cancel}</button>
+                                  </div>`;
+                        },
+                        type:'template',
+                        onok: okCb,
+                        oncancel: cancelCb
+                      }).show()
 }
-njModal.prompt = function (content = njModal.defaults._missedContent, placeholder, okCb, cancelCb) {
+njModal.prompt = function (content, placeholder, okCb, cancelCb) {
   if (typeof placeholder === 'function') {
     cancelCb = okCb;
     okCb = placeholder;
     placeholder = '';
   }
-  let template = `<div class="njm__body">${content}<br/><input data-njm-prompt-input type="text" placeholder="${placeholder}" /></div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
 
   return new njModal({
-    content: template,
-    type: 'template',
-    onok: okCb,
-    oncancel: cancelCb
-  }).show();
+                        content: function(rawitem) {
+                          return `<div class="njm__body">
+                                    ${content || this.o.text._missedContent}
+                                    <div>
+                                      <input data-njm-prompt-input type="text" placeholder="${placeholder || ''}" />
+                                    </div>
+                                  </div>
+                                  <div class="njm__footer">
+                                    <button data-njm-ok>${this.o.text.ok}</button>
+                                    <button data-njm-cancel>${this.o.text.cancel}</button>
+                                  </div>`;
+                        },
+                        type:'template',
+                        onok: okCb,
+                        oncancel: cancelCb
+                      }).show()
 }
 
 if (!njModal.g) njModal.g = getDefaultInfo();

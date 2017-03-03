@@ -8,7 +8,8 @@ To polyfill:
   datalist
   indexof
 
-
+Docs:
+content может быть фнукцией
 Плюсы
 адаптивное по умолчанию
 центрировние с помощью css
