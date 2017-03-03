@@ -868,7 +868,7 @@ class njModal {
               this.state.scrollbarHidden = true;
 
               this.v.container.addClass('njm-hideScrollbar');
-              this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
+              // this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
 
             }
           }
