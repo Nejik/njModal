@@ -61,7 +61,7 @@ class njModal {
 
     //we should have dom element or at least content option for creating item
     if (!o.elem && !o.content) {
-      this._error('njModal, no elements or content for modal.');
+      this._error('njModal, no elements (o.elem) or content (o.content) for modal.');
       return;
     }
     if (o.elem) {
@@ -371,8 +371,13 @@ class njModal {
     return normalizedItem;
   }
   _normalizeItem(item, el) {
+    let evaluatedContent;
+    if (typeof item.content === 'function') {
+      evaluatedContent = item.content.call(this);
+    }
+    
     return {
-      content: item.content || this.o.text._missedContent,
+      content: evaluatedContent || this.o.text._missedContent,
       type: item.type || this._type(item.content || this.o.text._missedContent),
       header: item.header,
       footer: item.footer,
@@ -420,7 +425,7 @@ class njModal {
     dom.modalOuter[0].appendChild(dom.modal[0]);
 
     if (item.type === "template") {
-      dom.modal[0].innerHTML = o.template || o.content;
+      dom.modal[0].innerHTML = item.content;
     } else {
       //insert body
       dom.body = $(o.templates.body);
@@ -462,17 +467,17 @@ class njModal {
 
         modalFragment.appendChild(dom.footer[0])
       }
+
+      //insert close button
+      if (o.close === 'inside') {
+        dom.close = $(o.templates.close);
+        dom.close[0].setAttribute('title', o.text.close);
+
+        modalFragment.appendChild(dom.close[0]);
+      }
+
+      dom.modal[0].appendChild(modalFragment)
     }
-
-    //insert close button
-    if (o.close === 'inside') {
-      dom.close = $(o.templates.close);
-      dom.close[0].setAttribute('title', o.text.close);
-
-      modalFragment.appendChild(dom.close[0]);
-    }
-
-    dom.modal[0].appendChild(modalFragment)
 
     this._cb('item_dom_created', item);
   }
@@ -633,9 +638,9 @@ class njModal {
   }
   _setFocusInPopup() {
     var o = this.o,
-        focusElement;
+      focusElement;
     // if(document.activeElement) document.activeElement.blur();//check for existances needed for ie... ofc. Oh lol, if focus on body and we call blur, ie9/10 switches windows like alt+tab Oo
-    if(o.focus) {
+    if (o.focus) {
       focusElement = this.items[this.active].dom.modal.find(o.focus);
     }
 
@@ -644,7 +649,7 @@ class njModal {
       focusElement[0].focus();
     } else if (o.close === "outside") {//then try to focus close buttons
       this.v.close[0].focus()
-    } else if (o.close === "inside") {
+    } else if (o.close === "inside" && this.items[this.active].dom.close) {//if type:"template" is used we have no close button here
       this.items[this.active].dom.close[0].focus();
     } else {//if no, focus popup itself
       this.items[this.active].dom.modal[0].focus();
@@ -1178,11 +1183,8 @@ class njModal {
     if (o['oncb'] && typeof o['oncb'] === 'function') {
       callbackResult = o['oncb'].apply(this, cbArgs);
     }
-    //trigger common callback on document
-    // cbArgs.push(this);
-    // this.v.document.triggerHandler('njm_cb', cbArgs);
 
-    //trigger common callback on instance
+    //trigger common global callback on instance
     this.trigger.apply(this, ['cb'].concat(cbArgs));
 
 
@@ -1268,12 +1270,12 @@ njModal.confirm = function (content = njModal.defaults._missedContent, okCb, can
   }).show();
 }
 njModal.prompt = function (content = njModal.defaults._missedContent, placeholder, okCb, cancelCb) {
-  if(typeof placeholder === 'function') {
-		cancelCb = okCb;
-		okCb = placeholder;
-		placeholder = '';
-	}
-  let template = `<div class="njm__body">${content}<br/><input class="njm-prompt-input" data-njm-prompt-input type="text" placeholder="${placeholder}" /></div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
+  if (typeof placeholder === 'function') {
+    cancelCb = okCb;
+    okCb = placeholder;
+    placeholder = '';
+  }
+  let template = `<div class="njm__body">${content}<br/><input data-njm-prompt-input type="text" placeholder="${placeholder}" /></div><div class="njm__footer"><button data-njm-ok>${njModal.defaults.text.ok}</button><button data-njm-cancel>${njModal.defaults.text.cancel}</button></div>`;
 
   return new njModal({
     content: template,
