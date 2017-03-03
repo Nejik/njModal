@@ -306,15 +306,19 @@ j.fn.hasClass = function (classname) {
 j.fn.addClass = function (classes) {
     var arr = classes.split(' ');
 
-    return this.each(function() {
-        for (var i = 0, l = arr.length; i < l ;i++) {
+    return this.each(function () {
+        for (var i = 0, l = arr.length; i < l; i++) {
             this.classList.add(arr[i]);
         }
     });
-  }
-j.fn.removeClass = function (classname) {
-    return this.each(function () {
-        this.classList.remove(classname)
+}
+j.fn.removeClass = function (classes) {
+    var arr = classes.split(' ');
+
+    return this.each(function (i) {
+        for (var i = 0, l = arr.length; i < l; i++) {
+            this.classList.remove(arr[i]);
+        }
     });
 }
 // for closest we need j.inArray
