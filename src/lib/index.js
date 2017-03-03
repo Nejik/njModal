@@ -374,6 +374,8 @@ class njModal {
     let evaluatedContent;
     if (typeof item.content === 'function') {
       evaluatedContent = item.content.call(this, item);
+    } else {
+      evaluatedContent = item.content;
     }
     
     return {
@@ -722,6 +724,7 @@ class njModal {
 
 
       if (o.out) {
+        if (o.dialog && that._cb('cancel') === false) return;
         that.hide();
       } else {
         that.items[that.active].dom.modal.addClass('njm_pulse');
@@ -756,7 +759,8 @@ class njModal {
     }
     h.wrap_close = function (e) {
       (e.preventDefault) ? e.preventDefault() : e.returnValue = false;
-
+      
+      if (o.dialog && that._cb('cancel') === false) return;
       that.hide();
     }
     h.wrap_ok = function (e) {
@@ -1169,6 +1173,7 @@ class njModal {
     ) {
       this.state.state = type;
     }
+
     //do some dirty stuff on callbacks
     this._cbStuff(type);
 
@@ -1190,6 +1195,16 @@ class njModal {
 
     //trigger callback from options with "on" prefix (onshow, onhide)
     var clearArgs = Array.prototype.slice.call(arguments, 1);
+
+    if (o.dialog && (type === 'ok' || type === 'cancel')) {
+      let modal = this.items[this.active].dom.modal,
+          prompt_input = modal.find('[data-njm-prompt-input]'),
+          prompt_value;
+      if(prompt_input.length) prompt_value = prompt_input[0].value || null;
+      
+      clearArgs.unshift(prompt_value)
+    }
+
     if (typeof o['on' + type] === 'function') {
       callbackResult = o['on' + type].apply(this, clearArgs);
     }
@@ -1260,6 +1275,8 @@ njModal.alert = function (content, okCb, cancelCb) {
                                   </div>`;
                         },
                         type:'template',
+                        dialog: true,
+                        out: false,
                         onok: okCb,
                         oncancel: cancelCb
                       }).show()
@@ -1276,6 +1293,8 @@ njModal.confirm = function (content, okCb, cancelCb) {
                                   </div>`;
                         },
                         type:'template',
+                        dialog: true,
+                        out: false,
                         onok: okCb,
                         oncancel: cancelCb
                       }).show()
@@ -1301,6 +1320,8 @@ njModal.prompt = function (content, placeholder, okCb, cancelCb) {
                                   </div>`;
                         },
                         type:'template',
+                        dialog: true,
+                        out: false,
                         onok: okCb,
                         oncancel: cancelCb
                       }).show()
