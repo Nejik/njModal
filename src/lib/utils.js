@@ -112,8 +112,7 @@ export let defaults = {
 	close: 'outside',//(inside || outside || boolean false) add close button inside or outside popup or don't add at all
 	autoheight: false,//(boolean || image) should we set maximum height of modal? if image is selected, only images will be autoheighted
 
-
-	focus: 'input, select, textarea, button',//(boolean false, selector) set focus to element, after modal is shown, if false, no autofocus elements inside, otherwise focus selected element
+	focus: '',//(boolean false, selector) set focus to element, after modal is shown, if false, no autofocus elements inside, otherwise focus selected element
 
 	//gallery
 	// selector:          '',//(selector) child items selector, for gallery elements. Can be used o.selector OR o.delegate
@@ -128,6 +127,22 @@ export let defaults = {
 	// loop:              true,//(boolean), show first image when call next on last slide and vice versa. Requires three or more images. If there are less than 4 slides, option will be set to false automatically.
 	// imgclick:          true,//(boolean) should we change slide if user clicks on image?
 	// preload:           '3 3',//(boolean false || string) space separated string with 2 numbers, how much images we should preload before  and after active slide
+
+	
+
+	content: undefined,//(string) content for modal
+	_missedContent: 'njModal plugin: meow, put some content here...',//this string uses, when slide have no content
+	type: '',//(html || selector || text || template) type of content, if selector used, whole element will be inserted in modal. Template simila to html, but template inserted without .njm__body tag, directly to .njm
+	header: undefined,//(html) html that will be added as modal header (for first slide)
+	footer: undefined,//(html) html that will be added as modal footer (for first slide)
+
+	// we need quotes here because of ie8..
+	'class': false,//(string) classnames(separated with space) that will be added to modal wrapper, you can use it for styling
+	zindex: false,//(boolean false || number) zindex that will be set on modal, probably not a good idea to use this option, set it in css and use o.class instead
+
+	anim: 'scale',//(false || string) name of animation, or string with space separated 2 names of show/hide animation
+	animclass: 'animated',//(string) additional class that will be added to modal window during animation (can be used for animate.css or other css animation libraries)
+	duration: 'auto',//(string || number || auto) duration of animations, or string with space separated 2 durations of show/hide animation. You can set 'auto 100' if you want to set only duration for hide. It should be used when problems with auto detection (but I have not seen this problem ^^)
 
 	templates: {
 		wrap: '<div class="njm-wrap"><div class="njm-items"></div></div>',
@@ -148,21 +163,6 @@ export let defaults = {
 		// next:        '<button type="button" class="njm-arrow njm-next" data-njm-next></button>'
 	},
 
-	content: undefined,//(string) content for modal
-	_missedContent: 'njModal plugin: meow, put some content here...',//this string uses, when slide have no content
-	type: '',//(html || selector || text || template) type of content, if selector used, whole element will be inserted in modal. Template simila to html, but template inserted without .njm__body tag, directly to .njm
-	header: undefined,//(html) html that will be added as modal header (for first slide)
-	footer: undefined,//(html) html that will be added as modal footer (for first slide)
-
-	// we need quotes here because of ie8..
-	'class': false,//(string) classnames(separated with space) that will be added to modal wrapper, you can use it for styling
-	zindex: false,//(boolean false || number) zindex that will be set on modal, probably not a good idea to use this option, set it in css and use o.class instead
-
-	anim: 'scale',//(false || string) name of animation, or string with space separated 2 names of show/hide animation
-	animclass: 'animated',//(string) additional class that will be added to modal window during animation (can be used for animate.css or other css animation libraries)
-	duration: 'auto',//(string || number || auto) duration of animations, or string with space separated 2 durations of show/hide animation. You can set 'auto 100' if you want to set only duration for hide. It should be used when problems with auto detection (but I have not seen this problem ^^)
-
-	// img: 'load',//(load || ready) we should wait until img will fully loaded or show as soon as size will be known (ready is useful for progressive images)
 	text: {
 		_missedContent: 'njBox plugin: meow, put some content here...',//text for case, when slide have no content
 		// preloader:    'Loading...',//title on preloader element
@@ -182,5 +182,8 @@ export let defaults = {
 		placeholder: ''//placeholder for prompt input
 
 	},
+
+	_focusable: 'a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), *[tabindex]:not(*[tabindex="-1"]), *[contenteditable]',//(selector) this elements we will try to focus on popup shown after custom o.focus
+	
 	autobind: '[data-toggle~="modal"]'//(selector) selector that will be used for autobind (can be used only with changing global default properties) Set it after njModal.js is inserted njModal.defaults.autobind = '.myAutoBindSelector'
 };

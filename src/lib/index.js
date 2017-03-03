@@ -66,6 +66,10 @@ class njModal {
     }
     if (o.elem) {
       let $elem = $(o.elem);
+      if(!$elem.length) {
+        this._error(`njModal, element not found (${o.elem})`);
+        return;
+      }
       if ($elem.length > 1) $elem = $($elem[0]);
       if ($elem[0].njModal) {
         this._error('njModal, already inited on this element');
@@ -492,7 +496,7 @@ class njModal {
 
         break;
       case 'html':
-        item.dom.modal[0].innerHTML = item.content;
+        item.dom.body[0].innerHTML = item.content;
 
         break;
       case 'selector':
@@ -641,13 +645,16 @@ class njModal {
   _setFocusInPopup() {
     var o = this.o,
       focusElement;
-    // if(document.activeElement) document.activeElement.blur();//check for existances needed for ie... ofc. Oh lol, if focus on body and we call blur, ie9/10 switches windows like alt+tab Oo
+
     if (o.focus) {
       focusElement = this.items[this.active].dom.modal.find(o.focus);
     }
+    if(!focusElement || !focusElement.length) {
+      focusElement = this.items[this.active].dom.modal.find(o._focusable);
+    }
 
     //first try to focus elements inside modal
-    if (focusElement.length) {
+    if (focusElement && focusElement.length) {
       focusElement[0].focus();
     } else if (o.close === "outside") {//then try to focus close buttons
       this.v.close[0].focus()
@@ -853,8 +860,6 @@ class njModal {
 
             //don't add padding to html tag if no scrollbar (simple short page) or popup already opened
             if (!this.v.container[0].njm_scrollbar && !this.state.scrollbarHidden && (sb || this.v.html.css('overflowY') === 'scroll' || this.v.body.css('overflowY') === 'scroll')) {
-              this.state.scrollbarHidden = true;
-
               //existing of that variable means that other instance of popup hides scrollbar on this element already
               this.v.html.addClass('njm-hideScrollbar');
               this.v.html.css('paddingRight', parseInt(this.v.html.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
@@ -862,16 +867,15 @@ class njModal {
           } else {
             var sb = (this.v.container[0].scrollHeight > this.v.container[0].clientHeight);//check for scrollbar existance on this element
 
-            //don't add padding to html tag if no scrollbar (simple short page) or popup already opened
-            if (!this.state.scrollbarHidden && (sb || this.v.container.css('overflowY') === 'scroll')) {
-
-              this.state.scrollbarHidden = true;
+            //don't add padding to container if no scrollbar (simple short page) or popup already opened
+            // if (!this.state.scrollbarHidden && (sb || this.v.container.css('overflowY') === 'scroll')) {
 
               this.v.container.addClass('njm-hideScrollbar');
               // this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
 
-            }
+            // }
           }
+          this.state.scrollbarHidden = true;
 
           // if(this.state.scrollbarHidden) {
           //fixes case when we have 2 modals on one container, and after first close, first popup shows scrollbar
@@ -1113,8 +1117,8 @@ class njModal {
       modal.removeClass(animHide);
 
       if (callback) callback.apply(that);
-      that._cb('hidden');
       that._clear();
+      that._cb('hidden');
     }
   }
 
