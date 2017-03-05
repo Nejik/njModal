@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="gulp.styles.css">
     <link rel="stylesheet" href="webpack.styles.css">
   <% } else{ %>  
-    <link rel="stylesheet" href="njModal.css">
+    <link rel="stylesheet" href="njBox.css">
   <% } %>
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   
@@ -23,7 +23,7 @@
     .lorem {
       height: 2000px;
     }
-    #modal {
+    #modal, #modal2 {
       max-width: 500px;
       display: none;
     }
@@ -42,11 +42,12 @@
       overflow: auto;
     }
   </style>
-  <title>njModal</title>
+  <title>njBox</title>
 </head>
 
 <body>
-  <a href="#modal" class="link" data-toggle="modal">Open window</a>
+  <a href="#modal" class="link">Open window</a>
+  
   <div class="container">
     <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam consectetur earum ex. Culpa velit cupiditate, dolorum incidunt temporibus sit laborum porro blanditiis, adipisci. Tenetur est distinctio cum architecto eligendi in.</div>
     <div>Eius fugit odit veniam dolorum aliquam nulla porro soluta quaerat accusamus vero, dignissimos, natus officia illum corporis illo fuga aut nemo molestiae excepturi quisquam, veritatis commodi dolorem. Harum, numquam, magnam.</div>
@@ -100,15 +101,25 @@
     <div>Quas, ullam eaque corporis nesciunt, labore nam! Laudantium repudiandae tempore, voluptate obcaecati aperiam tenetur eveniet aspernatur, voluptatum eum distinctio, veritatis debitis quas adipisci iste voluptates exercitationem mollitia reiciendis cumque illo.</div>
   </div>
   <div id="modal">
+    <!--<a href="#modal2" class="link2">Open window 2</a>-->
     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente deserunt necessitatibus magnam voluptatum pariatur esse, facere voluptatem delectus nobis quo nemo quibusdam magni excepturi incidunt. Eius modi tempora dolores soluta explicabo hic, aut ipsam voluptatem necessitatibus molestiae tenetur illo doloribus dolorum asperiores a ab amet perferendis beatae quae reiciendis fugiat consequatur facere! Laboriosam hic dolore repellendus ducimus veritatis minus maxime eveniet quam vitae quos. Ipsa ut magni dolor quidem! Voluptate impedit fuga reiciendis suscipit doloribus esse fugit, accusamus quibusdam velit veritatis ex. Totam ullam reiciendis dolorem facere fuga, temporibus nostrum esse error sapiente alias amet quo saepe. Officia, iste distinctio? Quas molestias eius ex ratione placeat quis officiis quia fugiat amet tenetur ipsa est, cumque, voluptatum maiores quasi perspiciatis quae sed, earum ducimus vero. Ab facilis reiciendis voluptate, eveniet distinctio quam architecto dignissimos, dolore veniam pariatur libero deserunt vel nobis numquam recusandae nostrum hic odit deleniti sequi!
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente deserunt necessitatibus magnam voluptatum pariatur esse, facere voluptatem delectus nobis quo nemo quibusdam magni excepturi incidunt. Eius modi tempora dolores soluta explicabo hic, aut ipsam voluptatem necessitatibus molestiae tenetur illo doloribus dolorum asperiores a ab amet perferendis beatae quae reiciendis fugiat consequatur facere! Laboriosam hic dolore repellendus ducimus veritatis minus maxime eveniet quam vitae quos. Ipsa ut magni dolor quidem! Voluptate impedit fuga reiciendis suscipit doloribus esse fugit, accusamus quibusdam velit veritatis ex. Totam ullam reiciendis dolorem facere fuga, temporibus nostrum esse error sapiente alias amet quo saepe. Officia, iste distinctio? Quas molestias eius ex ratione placeat quis officiis quia fugiat amet tenetur ipsa est, cumque, voluptatum maiores quasi perspiciatis quae sed, earum ducimus vero. Ab facilis reiciendis voluptate, eveniet distinctio quam architecto dignissimos, dolore veniam pariatur libero deserunt vel nobis numquam recusandae nostrum hic odit deleniti sequi!
 
     </div>
-  <script src="njModal.js"></script>
+    <div id="modal2">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente deserunt necessitatibus magnam voluptatum pariatur esse, facere voluptatem delectus nobis quo nemo quibusdam magni excepturi incidunt. Eius modi tempora dolores soluta explicabo hic, aut ipsam voluptatem necessitatibus molestiae tenetur illo doloribus dolorum asperiores a ab amet perferendis beatae quae reiciendis fugiat consequatur facere! Laboriosam hic dolore repellendus ducimus veritatis minus maxime eveniet quam vitae quos. Ipsa ut magni dolor quidem! Voluptate impedit fuga reiciendis suscipit doloribus esse fugit, accusamus quibusdam velit veritatis ex. Totam ullam reiciendis dolorem facere fuga, temporibus nostrum esse error sapiente alias amet quo saepe. Officia, iste distinctio? Quas molestias eius ex ratione placeat quis officiis quia fugiat amet tenetur ipsa est, cumque, voluptatum maiores quasi perspiciatis quae sed, earum ducimus vero. Ab facilis reiciendis voluptate, eveniet distinctio quam architecto dignissimos, dolore veniam pariatur libero deserunt vel nobis numquam recusandae nostrum hic odit deleniti sequi!
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente deserunt necessitatibus magnam voluptatum pariatur esse, facere voluptatem delectus nobis quo nemo quibusdam magni excepturi incidunt. Eius modi tempora dolores soluta explicabo hic, aut ipsam voluptatem necessitatibus molestiae tenetur illo doloribus dolorum asperiores a ab amet perferendis beatae quae reiciendis fugiat consequatur facere! Laboriosam hic dolore repellendus ducimus veritatis minus maxime eveniet quam vitae quos. Ipsa ut magni dolor quidem! Voluptate impedit fuga reiciendis suscipit doloribus esse fugit, accusamus quibusdam velit veritatis ex. Totam ullam reiciendis dolorem facere fuga, temporibus nostrum esse error sapiente alias amet quo saepe. Officia, iste distinctio? Quas molestias eius ex ratione placeat quis officiis quia fugiat amet tenetur ipsa est, cumque, voluptatum maiores quasi perspiciatis quae sed, earum ducimus vero. Ab facilis reiciendis voluptate, eveniet distinctio quam architecto dignissimos, dolore veniam pariatur libero deserunt vel nobis numquam recusandae nostrum hic odit deleniti sequi!
+
+    </div>
+  <script src="njBox.js"></script>
   <script>
-    var modal = new njModal({
-                              elem: '.link'
+    var modal = new njBox({
+                              elem: '.link',
+                              onhidden: function() {
+                                // console.log(this.v.container[0].njm_scrollbar);
+                              }
                             })
+               
   </script>
 </body>
 

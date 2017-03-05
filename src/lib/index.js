@@ -1,5 +1,5 @@
 /*!
- * njModal - v2.0.0
+ * njBox - v2.0.0
  * nejikrofl@gmail.com
  * Copyright (c) 2017 N.J.
 */
@@ -12,10 +12,10 @@ import {
   defaults
 } from 'lib/utils.js';
 
-class njModal {
+class njBox {
   constructor(el, options) {//el can be a string, selector/dom/j/jQuery element
     if (!arguments.length) {
-      console.error('njModal, arguments not passed.');
+      console.error('njBox, arguments not passed.');
       return;
     }
     let opts;
@@ -37,7 +37,7 @@ class njModal {
   }
 
   _init(opts) {
-    let o = this.o = $.extend({}, njModal.defaults, opts);
+    let o = this.o = $.extend({}, njBox.defaults, opts);
 
     this.active = 0;
 
@@ -61,21 +61,21 @@ class njModal {
 
     //we should have dom element or at least content option for creating item
     if (!o.elem && !o.content) {
-      this._error('njModal, no elements (o.elem) or content (o.content) for modal.');
+      this._error('njBox, no elements (o.elem) or content (o.content) for modal.');
       return;
     }
     if (o.elem) {
       let $elem = $(o.elem);
       if(!$elem.length) {
-        this._error(`njModal, element not found (${o.elem})`);
+        this._error(`njBox, element not found (${o.elem})`);
         return;
       }
       if ($elem.length > 1) $elem = $($elem[0]);
-      if ($elem[0].njModal) {
-        this._error('njModal, already inited on this element');
+      if ($elem[0].njBox) {
+        this._error('njBox, already inited on this element');
         return;
       }
-      $elem[0].njModal = this; //prevent multiple initialization on one element
+      $elem[0].njBox = this; //prevent multiple initialization on one element
 
       //extend global options with gathered from dom element
       $.extend(true, this.o, this._gatherData($elem))
@@ -106,11 +106,11 @@ class njModal {
     var o = this.o;
 
     if (this.state.state !== 'inited') {
-      this._error('njModal, show, plugin not inited or in not inited state(probably plugin is already visible or destroyed, or smth else..)');
+      this._error('njBox, show, plugin not inited or in not inited state(probably plugin is already visible or destroyed, or smth else..)');
       return;
     }
     if (!this.items.length) {
-      this._error('njModal, smth goes wrong, plugin don\'t create any item to show', true);
+      this._error('njBox, smth goes wrong, plugin don\'t create any item to show', true);
       return;
     }
 
@@ -145,7 +145,7 @@ class njModal {
   }
   hide() {
     if (this.state.state !== 'shown') {
-      this._error('njModal, hide, we can hide only showed modal (probably animation is still running).')
+      this._error('njBox, hide, we can hide only showed modal (probably animation is still running).')
       return;
     }
 
@@ -231,7 +231,7 @@ class njModal {
 
     d.autoheight = (this.v.container[0] === this.v.body[0]) ? d.winHeight : d.containerHeight;
     // if(this._o.scrollbarHidden) {
-    //  this._o.winWidth -= njModal.g.scrollbarSize;
+    //  this._o.winWidth -= njBox.g.scrollbarSize;
     // }
   }
   _setMaxHeight(item) {
@@ -417,14 +417,14 @@ class njModal {
       modalFragment = document.createDocumentFragment();
 
     dom.modalOuter = $(o.templates.modalOuter);
-    dom.modalOuter[0].njModal = this;
+    dom.modalOuter[0].njBox = this;
 
     //main modal wrapper
     dom.modal = $(o.templates.modal);
     dom.modal[0].setAttribute('tabindex', '-1');
-    dom.modal[0].njModal = this;
+    dom.modal[0].njBox = this;
     if (!dom.modal.length) {
-      this._error('njModal, error in o.templates.modal');
+      this._error('njBox, error in o.templates.modal');
       return;
     }
 
@@ -436,7 +436,7 @@ class njModal {
       //insert body
       dom.body = $(o.templates.body);
       if (!dom.body.length) {
-        this._error('njModal, error in o.templates.body');
+        this._error('njBox, error in o.templates.body');
         return;
       }
 
@@ -449,7 +449,7 @@ class njModal {
         dom.header = $(o.templates.header);
 
         if (!dom.header.length) {
-          this._error('njModal, error in o.templates.header');
+          this._error('njBox, error in o.templates.header');
           return;
         }
         //insert header info
@@ -464,7 +464,7 @@ class njModal {
         dom.footer = $(o.templates.footer);
 
         if (!dom.footer.length) {
-          this._error('njModal, error in njModal.templates.footer');
+          this._error('njBox, error in njBox.templates.footer');
           return;
         }
         //insert footer info
@@ -504,7 +504,7 @@ class njModal {
 
         break;
       default:
-        this._error('njModal, seems that you use wrong type(' + item.type + ') of item.', true);
+        this._error('njBox, seems that you use wrong type(' + item.type + ') of item.', true);
         return;
         break;
     }
@@ -525,7 +525,7 @@ class njModal {
     //find container
     this.v.container = $(o.container);
     if (!this.v.container.length) {
-      this._error('njModal, can\'t find container element. (we use body instead)');
+      this._error('njBox, can\'t find container element. (we use body instead)');
       this.v.container = this.v.body;//in case if we have no container element, or wrong selector for container element
     }
     //check if container not relative position
@@ -536,11 +536,11 @@ class njModal {
     //create core elements
     this.v.wrap = $(o.templates.wrap);
     if (!this.v.wrap.length) {
-      this._error('njModal, smth wrong with o.templates.wrap.');
+      this._error('njBox, smth wrong with o.templates.wrap.');
       return;
     }
     if (o['class']) this.v.wrap.addClass(o['class']);
-    this.v.wrap[0].njModal = this;
+    this.v.wrap[0].njBox = this;
     if (o.zindex) this.v.wrap.css('zIndex', o.zindex);
 
     this.v.items = this.v.wrap.find('.njm-items');
@@ -566,7 +566,7 @@ class njModal {
       item = this.items[index];
 
     if (!item) {
-      this._error('njModal, we have no item with this index - ' + index, true);
+      this._error('njBox, we have no item with this index - ' + index, true);
       return;
     }
 
@@ -695,7 +695,7 @@ class njModal {
       (e.preventDefault) ? e.preventDefault() : e.returnValue = false;
 
       if (that.state.state !== 'inited') {
-        that._error('njModal, show, plugin not inited or in not inited state(probably plugin is already visible or destroyed, or smth else..)');
+        that._error('njBox, show, plugin not inited or in not inited state(probably plugin is already visible or destroyed, or smth else..)');
         return;
       }
       if ($(el).closest('.njm-close-system, .njm-arrow').length) return;//don't remember why it here O_o
@@ -862,7 +862,7 @@ class njModal {
             if (!this.v.container[0].njm_scrollbar && !this.state.scrollbarHidden && (sb || this.v.html.css('overflowY') === 'scroll' || this.v.body.css('overflowY') === 'scroll')) {
               //existing of that variable means that other instance of popup hides scrollbar on this element already
               this.v.html.addClass('njm-hideScrollbar');
-              this.v.html.css('paddingRight', parseInt(this.v.html.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
+              this.v.html.css('paddingRight', parseInt(this.v.html.css('paddingRight')) + njBox.g.scrollbarSize + 'px');
             }
           } else {
             var sb = (this.v.container[0].scrollHeight > this.v.container[0].clientHeight);//check for scrollbar existance on this element
@@ -871,7 +871,7 @@ class njModal {
             // if (!this.state.scrollbarHidden && (sb || this.v.container.css('overflowY') === 'scroll')) {
 
               this.v.container.addClass('njm-hideScrollbar');
-              // this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njModal.g.scrollbarSize + 'px');
+              // this.v.container.css('paddingRight', parseInt(this.v.container.css('paddingRight')) + njBox.g.scrollbarSize + 'px');
 
             // }
           }
@@ -898,7 +898,7 @@ class njModal {
 
         if (this.v.container[0] === this.v.body[0]) {
           this.v.html.removeClass('njm-hideScrollbar');
-          var computedPadding = parseInt(this.v.html.css('paddingRight')) - njModal.g.scrollbarSize;
+          var computedPadding = parseInt(this.v.html.css('paddingRight')) - njBox.g.scrollbarSize;
 
           if (computedPadding) {//if greater than 0
             this.v.html.css('paddingRight', computedPadding + 'px');
@@ -908,7 +908,7 @@ class njModal {
         } else {
 
           this.v.container.removeClass('njm-hideScrollbar');
-          var computedPadding = parseInt(this.v.container.css('paddingRight')) - njModal.g.scrollbarSize;
+          var computedPadding = parseInt(this.v.container.css('paddingRight')) - njBox.g.scrollbarSize;
 
           if (computedPadding) {//if greater than 0
             this.v.container.css('paddingRight', computedPadding + 'px');
@@ -1256,20 +1256,20 @@ class njModal {
 //global options
 
 //addons
-njModal.a = {}
+njBox.a = {}
 //default settings
-njModal.defaults = defaults;
+njBox.defaults = defaults;
 //autobind functions
-njModal.autobind = function () {
-  $(njModal.defaults.autobind).each(function () {
-    if (this.njModal) return;
-    new njModal({
+njBox.autobind = function () {
+  $(njBox.defaults.autobind).each(function () {
+    if (this.njBox) return;
+    new njBox({
       elem: $(this)
     })
   })
 }
-njModal.alert = function (content, okCb, cancelCb) {
-  return new njModal({
+njBox.alert = function (content, okCb, cancelCb) {
+  return new njBox({
                         content: function(rawitem) {
                           return `<div class="njm__body">
                                     ${content || this.o.text._missedContent}
@@ -1285,8 +1285,8 @@ njModal.alert = function (content, okCb, cancelCb) {
                         oncancel: cancelCb
                       }).show()
 }
-njModal.confirm = function (content, okCb, cancelCb) {
-  return new njModal({
+njBox.confirm = function (content, okCb, cancelCb) {
+  return new njBox({
                         content: function(rawitem) {
                           return `<div class="njm__body">
                                     ${content || this.o.text._missedContent}
@@ -1303,14 +1303,14 @@ njModal.confirm = function (content, okCb, cancelCb) {
                         oncancel: cancelCb
                       }).show()
 }
-njModal.prompt = function (content, placeholder, okCb, cancelCb) {
+njBox.prompt = function (content, placeholder, okCb, cancelCb) {
   if (typeof placeholder === 'function') {
     cancelCb = okCb;
     okCb = placeholder;
     placeholder = '';
   }
 
-  return new njModal({
+  return new njBox({
                         content: function(rawitem) {
                           return `<div class="njm__body">
                                     ${content || this.o.text._missedContent}
@@ -1331,5 +1331,5 @@ njModal.prompt = function (content, placeholder, okCb, cancelCb) {
                       }).show()
 }
 
-if (!njModal.g) njModal.g = getDefaultInfo();
-export default njModal;
+if (!njBox.g) njBox.g = getDefaultInfo();
+export default njBox;

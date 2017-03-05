@@ -5,7 +5,7 @@
     "start": "gulp",
     "prod": "gulp prod"
   },
-  "main": "./prod/njModal.js",
+  "main": "./prod/njBox.js",
   "module": "./src/lib/index.js",
   "babel": {
     "presets": [

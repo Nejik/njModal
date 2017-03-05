@@ -30,7 +30,7 @@ const webpackConfig = {
     chunkFilename: '[id].js',
     sourcePrefix: '  ',
 
-    library: 'njModal',
+    library: 'njBox',
     libraryTarget: "umd",
     umdNamedDefine: true
   },

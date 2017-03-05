@@ -38,7 +38,7 @@ let paths = {
     src: [root.resolve('src/css/styles.css')],
     concatGulp: 'gulp.styles.css',//final name of css file builed by gulp
     concatWebpack: 'webpack.styles.css',//final name of css file builed by webpack
-    concatProd: 'njModal.css', 
+    concatProd: 'njBox.css', 
     dist: dist,
     webpackStyleName: 'webpack.styles.css',//temporary file with builded styles from webpack, after build it will be merged in main styles files
     watch: [root.resolve('src/**/*.css')]
@@ -46,7 +46,7 @@ let paths = {
   
   js: {
     src: [root.resolve('src/lib/index.js')],
-    concat: 'njModal.js',//final name of builded js file
+    concat: 'njBox.js',//final name of builded js file
     dist: dist
   }
 }
